@@ -64,46 +64,52 @@
   </footer>
 
   <!-- JAVASCRIPT -->
-  <script>
-    let cart = [];
+<script>
+  let cart = [];
 
-    function addToCart(name, price) {
-      cart.push({ name, price });
-      updateCartDisplay();
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    updateCartDisplay();
+  }
+
+  function updateCartDisplay() {
+    const cartList = document.getElementById("cartItems");
+    const totalDisplay = document.getElementById("cartTotal");
+
+    cartList.innerHTML = "";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      total += item.price;
+      cartList.innerHTML += `
+        <li class="flex justify-between items-center py-2">
+          <span>${item.name} - $${item.price}</span>
+          <button class="text-sm text-red-600 hover:underline" onclick="removeFromCart(${index})">Remove</button>
+        </li>`;
+    });
+
+    totalDisplay.textContent = total;
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartDisplay();
+  }
+
+  function checkout() {
+    if (cart.length === 0) {
+      alert("Your cart is empty. Please add items before checking out.");
+      return;
     }
 
-    function updateCartDisplay() {
-      const cartList = document.getElementById("cartItems");
-      const totalDisplay = document.getElementById("cartTotal");
+    // Save cart data to localStorage
+    localStorage.setItem("cartData", JSON.stringify(cart));
+    localStorage.setItem("cartTotal", document.getElementById("cartTotal").textContent);
 
-      cartList.innerHTML = "";
-      let total = 0;
-
-      cart.forEach((item, index) => {
-        total += item.price;
-        cartList.innerHTML += `
-          <li class="flex justify-between items-center py-2">
-            <span>${item.name} - $${item.price}</span>
-            <button class="text-sm text-red-600 hover:underline" onclick="removeFromCart(${index})">Remove</button>
-          </li>`;
-      });
-
-      totalDisplay.textContent = total;
-    }
-
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCartDisplay();
-    }
-
-    function checkout() {
-      if (cart.length === 0) {
-    alert("Please add at least one item to your cart before checking out.");
-      } else {
+    // Redirect to confirmation page
     window.location.href = "OrderConfirmationPage.html";
-      }
-    }
+  }
+</script>
 
-  </script>
 </body>
 </html>
