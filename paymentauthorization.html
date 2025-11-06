@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Authorization</title>
+  <link rel="stylesheet" href="dist/pos.css">
+</head>
+
+<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+
+  <!-- HEADER -->
+  <header class="header py-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain">
+      </div>
+      <nav class="flex space-x-8 text-white text-lg font-medium">
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <div class="bg-white shadow-soft rounded-xl p-10 w-full max-w-lg">
+      <p class="text-gray-600 mb-8">
+        Click below to authorize your payment using your provided payment information. 
+      </p>
+
+      <button id="authorizeBtn" class="btn btn-primary w-full hover:bg-blue-700 transition duration-300">
+        Authorize Payment
+      </button>
+
+      <div id="responseBox" class="mt-8 hidden">
+        <div id="responseMessage" class="text-lg"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+const baseURL = "https://pointofsale-bhvj.onrender.com";
+const btn = document.getElementById("authorizeBtn");
+const responseBox = document.getElementById("responseBox");
+const responseMessage = document.getElementById("responseMessage");
+
+btn.addEventListener("click", async () => {
+  const rand = Math.random() * 100;
+  let endpoint = "";
+  let errorType = "";
+
+  if (rand <= 60) {
+    endpoint = "/success";
+  } else if (rand <= 77) {
+    endpoint = "/incorrect-card";
+    errorType = "incorrect-card";
+  } else if (rand <= 94) {
+    endpoint = "/insufficient-funds";
+    errorType = "insufficient-funds";
+  } else {
+    endpoint = "/error500";
+    errorType = "server-error";
+  }
+
+  try {
+    const res = await fetch(baseURL + endpoint);
+    const data = await res.json();
+
+    // Manually decide success/failure based on endpoint
+    if (endpoint === "/success") {
+      responseBox.classList.remove("hidden");
+      responseMessage.className = "alert-success text-lg";
+      responseMessage.innerHTML = `✅ <strong>Success:</strong> ${data.message || "Payment authorized successfully!"}`;
+    } else {
+      throw new Error(errorType);
+    }
+  } catch (err) {
+    responseBox.classList.remove("hidden");
+    responseMessage.className = "alert-error text-lg";
+
+    let errorMessage = "";
+    switch (err.message) {
+      case "incorrect-card":
+        errorMessage = "❌ Incorrect card details entered. Please check your card number, expiry date, or CVV and try again.";
+        break;
+      case "insufficient-funds":
+        errorMessage = "💸 Your payment could not be processed due to insufficient funds in your account.";
+        break;
+      case "server-error":
+        errorMessage = "⚠️ Internal Server Error (500). Please try again later — the payment service encountered an issue.";
+        break;
+      default:
+        errorMessage = "❌ An unknown error occurred. Please try again.";
+    }
+
+    responseMessage.innerHTML = errorMessage;
+  }
+});
+  </script>
+</body>
+</html>

@@ -1,44 +1,94 @@
 <!DOCTYPE html>
-<html lang = "en">
-
+<html lang="en">
 <head>
-<meta charset="utf-8">    
-    <title>Order Confirmation</title>
-    <link rel="stylesheet" type="text/css" href="../POSFrontend/css/pos3 (place an order).css">
-    <link rel="icon" type="image/x-icon" href="../POSFrontend/pics/cart.ico">
-    <src script=""></src>
-    <style>
-      .top-right {
-      position: absolute;   
-      top: 10px;            
-      right: 10px;          
-      font-size: 18px;
-      font-family: Arial, sans-serif;
-    }
-    </style>    
-
-
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="dist/pos.css">
+  <link rel="icon" type="image/x-icon" href="images/cart.ico">
 </head>
 
-<body>
-  <a href="../POSFrontend/index.html">
-  <img src="../POSFrontend/pics/logo.png" alt="Logo" title="basic logo, will be changed" height="auto">
-  </a>
+<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
 
+  <!-- HEADER -->
+  <header class="header py-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain">
+      </div>
+    </div>
+  </header>
 
-  <h2>Order Confirmation</h2>
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <div class="bg-white shadow-soft rounded-xl p-10 w-full max-w-lg">
+      <h2 class="text-3xl font-semibold text-gray-900 mb-4">Thank You for Your Order!</h2>
+      <p class="text-gray-600 mb-6">Please review your information below and confirm your details.</p>
 
-  <!--List all customer details entered from the ordering page-->
-  <p>*Placeholder for customer information</p>
+      <!-- Placeholder for customer info -->
+      <div class="border border-gray-200 rounded-lg p-4 mb-6 text-left">
+        <p class="text-gray-700 font-medium mb-2">Customer Information:</p>
+        <ul class="text-gray-600 space-y-1">
+          <li><strong>Name:</strong> John Doe</li>
+          <li><strong>Email:</strong> john@example.com</li>
+          <li><strong>Address:</strong> 123 Main St, Los Angeles, CA</li>
+          <li><strong>Order Total:</strong> $25.00</li>
+        </ul>
+      </div>
 
-  <h3>Is all of the information above correct?</h3>
+      <h3 class="text-xl font-semibold mb-4">Is all of the information above correct?</h3>
 
-  <input type="checkbox" id="Correct" name="Yes!" value="confirm">
-  <label for="confirm"> Yes! </label><br>
-  <input type="checkbox" id="NotCorrect" name="No..." value="nonconfirm">
-  <label for="nonconfirm"> No... </label><br>
-  <a href="../POSFrontend/CustomerSettings.html" class="button">Confirm</a>
+      <form id="confirmationForm" class="flex flex-col items-start space-y-3 mb-6 text-left">
+        <label class="flex items-center space-x-2">
+          <input type="radio" id="Correct" name="confirmation" value="yes" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
+          <span>Yes, everything looks correct</span>
+        </label>
+
+        <label class="flex items-center space-x-2">
+          <input type="radio" id="NotCorrect" name="confirmation" value="no" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
+          <span>No, I need to make changes</span>
+        </label>
+      </form>
+
+      <button
+        id="confirmButton"
+        class="btn btn-primary w-full hover:bg-blue-700 transition duration-300">
+        Confirm Order
+      </button>
+
+      <p id="warningMessage" class="hidden text-red-600 mt-4">
+        ⚠️ Please select an option before continuing.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    document.getElementById("confirmButton").addEventListener("click", function() {
+      const selected = document.querySelector('input[name="confirmation"]:checked');
+      const warning = document.getElementById("warningMessage");
+
+      if (!selected) {
+        warning.classList.remove("hidden");
+        return;
+      }
+
+      warning.classList.add("hidden");
+
+      if (selected.value === "yes") {
+        // Redirect to settings or success page
+        window.location.href = "paymentauthorization.html";
+      } else {
+        // Redirect back to edit order
+        window.location.href = "Place an Order Page.html";
+      }
+    });
+  </script>
 
 </body>
-
 </html>

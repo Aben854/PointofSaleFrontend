@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* --- THEME SETTINGS --- */
+@theme {
+  --color-primary: #2563eb; /* modern blue */
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #111827; /* slate black */
+  --color-accent: #facc15; /* golden accent */
+  --color-bg: #f9fafb; /* light gray background */
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* --- GLOBAL BASE STYLES --- */
+html, body {
+  @apply bg-[var(--color-bg)] text-gray-800 font-sans min-h-screen;
+}
+
+h1, h2, h3, h4, h5 {
+  @apply font-semibold text-gray-900;
+}
+
+p {
+  @apply text-gray-600 leading-relaxed;
+}
+
+/* --- LAYOUT COMPONENTS --- */
+.container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+/* Header */
+.header {
+  @apply bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-primary)] text-white shadow-md;
+}
+
+.header-nav a {
+  @apply text-white hover:text-gray-200 transition-all duration-200;
+}
+
+/* Footer */
+.footer {
+  @apply bg-[var(--color-secondary)] text-gray-300 text-sm py-4 text-center mt-10;
+}
+
+/* --- BUTTONS --- */
+.btn {
+  @apply inline-block px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-sm;
+}
+
+.btn-primary {
+  @apply bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] focus:ring-4 focus:ring-blue-200;
+}
+
+.btn-secondary {
+  @apply bg-[var(--color-surface)] text-[var(--color-secondary)] border border-[var(--color-border)] hover:bg-gray-50;
+}
+
+.btn-accent {
+  @apply bg-[var(--color-accent)] text-[var(--color-secondary)] hover:bg-yellow-400;
+}
+
+/* --- CARDS --- */
+.card {
+  @apply bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300;
+}
+
+.card h3 {
+  @apply text-xl font-semibold mb-2;
+}
+
+/* --- FORMS --- */
+.input {
+  @apply w-full border border-[var(--color-border)] rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition;
+}
+
+.label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.form-group {
+  @apply mb-4;
+}
+
+/* --- ALERTS --- */
+.alert-success {
+  @apply bg-green-50 text-green-800 border border-green-300 rounded-md px-4 py-3;
+}
+
+.alert-error {
+  @apply bg-red-50 text-red-800 border border-red-300 rounded-md px-4 py-3;
+}
+
+/* --- UTILITIES --- */
+.shadow-soft {
+  @apply shadow-md hover:shadow-lg transition-shadow duration-200;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

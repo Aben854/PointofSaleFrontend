@@ -1,49 +1,73 @@
 <!DOCTYPE html>
-<html lang = "en">
-
+<html lang="en">
 <head>
-<meta charset="utf-8">    
-    <title>Online Storefront</title>
-    <link rel="stylesheet" type="text/css" href="../POSFrontend/css/pos3 (place an order).css">
-    <link rel="icon" type="image/x-icon" href="../POSFrontend/pics/cart.ico">
-    <style>
-      .top-right {
-      position: absolute;   
-      top: 10px;            
-      right: 10px;          
-      font-size: 18px;
-      font-family: Arial, sans-serif;
-    }
-    </style>    
-
-
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Storefront</title>
+  <link rel="stylesheet" href="dist/pos.css">
 </head>
 
+<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
 
-<body>
-  <a href="../POSFrontend/index.html">
-  <img src="../POSFrontend/pics/logo.png" alt="Logo" title="basic logo, will be changed" height="auto">
-  </a>
-  <h2>Products</h2>
-  <div>
-    <p>Shirt - $10 <button onclick="addToCart('Shirt', 10)">Add to Cart</button></p>
-    <img src="../POSFrontend/pics/shirt.jpg" alt="shirt" title="shirt">
-    <p>Jeans - $15 <button onclick="addToCart('Jeans', 15)">Add to Cart</button></p>
-    <img src="../POSFrontend/pics/jeans.jpg" alt="jeans" title="jeans">
-  </div>
+  <!-- HEADER -->
+  <header class="header py-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain">
+      </div>
+    </div>
+  </header>
 
-  <section class="top-right">
-  <h2>Cart</h2> <img src="../POSFrontend/pics/ordercart.png" alt="cart">
-  <ul id="cartItems"></ul>
-  <p>Total: $<span id="cartTotal">0</span></p>
-  <a href="../POSFrontend/OrderConfirmationPage.html" class="button">Checkout Items</a>
-  <!--add function that does not let customer go to order confirmation page and asks the customer to put something in the cart if the cart is empty-->
-  </section>
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 container mx-auto py-12 px-4 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- PRODUCTS SECTION -->
+    <section class="lg:col-span-2">
+      <h2 class="text-3xl font-semibold text-gray-900 mb-8">Products</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Product 1 -->
+        <div class="card flex flex-col items-center">
+          <img src="images/shirt.png" alt="Shirt" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
+          <h3 class="text-xl font-semibold mb-2">Shirt</h3>
+          <p class="text-gray-600 mb-4">$10.00</p>
+          <button class="btn btn-primary w-full" onclick="addToCart('Shirt', 10)">Add to Cart</button>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="card flex flex-col items-center">
+          <img src="images/pants.png" alt="Jeans" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
+          <h3 class="text-xl font-semibold mb-2">Pants</p></h3>
+          <p class="text-gray-600 mb-4">$15.00</p>
+          <button class="btn btn-primary w-full" onclick="addToCart('Jeans', 15)">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CART SECTION -->
+    <aside class="card lg:col-span-1 sticky top-6 h-fit">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">Your Cart🛒</h2>
+      </div>
+
+      <ul id="cartItems" class="divide-y divide-gray-200 mb-4"></ul>
+      <p class="text-lg font-semibold mb-4">Total: $<span id="cartTotal">0</span></p>
+
+      <button
+        class="btn btn-accent w-full"
+        onclick="checkout()">
+        Checkout Items
+      </button>
+    </aside>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+
+  <!-- JAVASCRIPT -->
   <script>
     let cart = [];
 
     function addToCart(name, price) {
-      
       cart.push({ name, price });
       updateCartDisplay();
     }
@@ -52,13 +76,16 @@
       const cartList = document.getElementById("cartItems");
       const totalDisplay = document.getElementById("cartTotal");
 
-      cartList.innerHTML = ""; 
+      cartList.innerHTML = "";
       let total = 0;
 
       cart.forEach((item, index) => {
         total += item.price;
-        cartList.innerHTML += `<li>${item.name} - $${item.price} 
-          <button onclick="removeFromCart(${index})">Remove</button></li>`;
+        cartList.innerHTML += `
+          <li class="flex justify-between items-center py-2">
+            <span>${item.name} - $${item.price}</span>
+            <button class="text-sm text-red-600 hover:underline" onclick="removeFromCart(${index})">Remove</button>
+          </li>`;
       });
 
       totalDisplay.textContent = total;
@@ -68,16 +95,15 @@
       cart.splice(index, 1);
       updateCartDisplay();
     }
+
+    function checkout() {
+      if (cart.length === 0) {
+    alert("Please add at least one item to your cart before checking out.");
+      } else {
+    window.location.href = "OrderConfirmationPage.html";
+      }
+    }
+
   </script>
-
-
-
 </body>
-
-
-
-
-
-
-
 </html>
