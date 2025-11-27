@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Information</title>
+  <link rel="stylesheet" href="dist/pos.css">
+</head>
+
+<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+  <!-- HEADER -->
+<header class="header py-4 shadow-md">
+      <div class="flex items-center">
+      <a href="https://pointofsalefrontend-086m.onrender.com/"><img src="images/logo.png"  width=200px height=75px alt="Welcome" class="h-12 ml auto"></a>
+    </div>
+  <div class="container mx-auto flex justify-between items-center">
+
+</header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
+      <h2 class="text-3xl font-semibold text-gray-900 mb-4">Enter your card details.</h2>
+      <p class="text-gray-600 mb-8">Details can be changed later from the settings page.</p>
+
+      <form action="accountcreation.php" method="POST" class="space-y-4 text-left">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="cardNumber" for="Cardnumber">Card Number:</label>
+            <input type="text" id="fName" name="fName" class="input" placeholder="10-Digit Card Number" required>
+          </div>
+          <div class="form-group">
+            <label class="label" for="lName">Expiration Date</label>
+            <input type="text" id="lName" name="lName" class="input" placeholder="Expiration Date" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="email">CC</label>
+          <input type="email" id="email" name="email" class="input" placeholder="3 Digit Number on the back" required>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300"
+          onclick="window.location.href='Place an Order Page.html'">
+          Proceed to Checkout
+        </button>
+      </form>
+    </div>
+  </main>
+<script>
+  function maskCardNumber(cardNumber) {
+  // Remove spaces or hyphens
+  const clean = cardNumber.replace(/\D/g, "");
+
+  // Mask all but last 4
+  const masked = clean.slice(-4).padStart(clean.length, "*");
+  return masked.replace(/(.{4})/g, "$1 ");
+}
+</script>
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+</body>
+</html>
