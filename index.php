@@ -1,8 +1,3 @@
-<?php
-// Optional: session_start(); // Only needed if showing session data
-// Optional error message display:
-// $error = isset($_GET['error']) ? $_GET['error'] : "";
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
