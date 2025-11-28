@@ -11,7 +11,7 @@ body {
   background: radial-gradient(circle at top, #1d4ed8 0%, #020617 60%, #000 100%);
   color: #e5e7eb;
   min-height: 100vh;
-  overflow: hidden; 
+  overflow: auto; 
 }
 
 /* Fullscreen canvas behind everything */
@@ -49,7 +49,6 @@ body {
   opacity: 0;
   animation: logoFadeIn 1.2s ease-out 0.2s forwards;
 }
-
 
 .logo {
   max-width: 260px;
@@ -132,7 +131,6 @@ body {
   }
 }
 
-
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -154,5 +152,84 @@ body {
     width: 100%;
     max-width: 260px;
     text-align: center;
+  }
+}
+
+/* ============================
+   2) Rounded, theme-matching inputs
+   ============================ */
+
+.signup-form {
+  max-width: 420px;
+}
+
+/* Labels for form fields */
+.label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e5e7eb;
+  margin-bottom: 2px;
+}
+
+/* Pill-shaped inputs that match the dark/blue theme */
+.input {
+  width: 100%;
+  border-radius: 999px;                         /* pill shape */
+  padding: 10px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.7);   /* slate border */
+  background: rgba(15, 23, 42, 0.85);           /* dark/navy glass */
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  outline: none;
+  margin-top: 2px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.8);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.input::placeholder {
+  color: rgba(148, 163, 184, 0.9);
+}
+
+/* Glow + slight lift on focus */
+.input:focus {
+  border-color: #38bdf8;  /* cyan accent */
+  background: rgba(15, 23, 42, 0.96);
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.5),
+    0 16px 34px rgba(15, 23, 42, 0.95);
+  transform: translateY(-1px);
+}
+
+/* ============================
+   3) Fade-in heading for "Create Your Account"
+   ============================ */
+
+.page-title {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  margin-bottom: 4px;
+  color: #f9fafb;
+}
+
+/* Reusable fade-in-up animation for titles */
+.fade-in-title {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
