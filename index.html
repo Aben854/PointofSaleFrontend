@@ -1,68 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Storefront Solutions</title>
-  <link rel="stylesheet" href="test.css">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <link rel="stylesheet" href="test.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
 </head>
 
-<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
-  <!-- HEADER -->
-  <header class="header py-4 shadow-md">
-    <div class="flex items-center">
-      <a href="https://storefrontsolutions.shop">
-        <img src="images/logo.png" width="200px" height="75px" alt="Welcome" class="h-12 ml auto">
-      </a>
-    </div>
-  </header>
+<body>
+  <!-- Fullscreen particle background -->
+  <canvas id="particle-canvas"></canvas>
 
-  <!-- MAIN -->
-  <main class="flex-1 flex flex-col justify-center items-center text-center px-4">
-    <h2 class="text-3xl font-semibold text-gray-900 mb-2">Welcome to our online Store!</h2>
-    <p class="text-gray-600 mb-6">First-time customers must make an account.</p>
-
-    <a href="Create an account page.html" class="btn btn-primary mb-10">Sign Up</a>
-
-    <!-- LOGIN FORM (now correctly wired to PHP) -->
-    <h3 class="text-xl font-semibold mb-2">Returning? Sign in and make your purchases!</h3>
-
-    <form action="login.php" method="POST" class="bg-white shadow-soft rounded-xl p-8 w-full max-w-sm">
-      <div class="form-group">
-        <label for="username" class="label">Username</label>
-        <input 
-          id="username" 
-          name="username" 
-          type="text" 
-          class="input" 
-          placeholder="Enter your username" 
-          required>
+  <!-- Foreground content -->
+  <div class="page-content">
+    <header class="hero-header">
+      <div class="logo-wrapper">
+        <img src="images/logo.png" alt="Storefront Solutions" class="logo">
       </div>
-
-      <div class="form-group">
-        <label for="password" class="label">Password</label>
-        <input 
-          id="password" 
-          name="password" 
-          type="password" 
-          class="input" 
-          placeholder="Enter your password" 
-          required>
+      <h1 class="headline">Intuitive, Accessible, and Tracable E-Commerce</h1>
+      <p class="subtitle">
+        If you are a returning user, please log in. <br> If you are a new user, please make an account.
+      </p>
+      <div class="cta-row">
+        <a href="Create an account page.html" class="btn primary">Create Account</a>
+        <a href="login.html" class="btn ghost">Sign In</a>
       </div>
+    </header>
+  </div>
 
-      <!-- Your original button styling preserved, now a proper submit -->
-      <button 
-        type="submit" 
-        class="btn btn-primary w-full mt-2">
-        Sign In
-      </button>
-    </form>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    Team 7
-  </footer>
+  <script src="particles.js"></script>
 </body>
 </html>
