@@ -4,7 +4,8 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Online Storefront</title>
-  <link rel="stylesheet" href="dist/pos.css">
+  <link rel="stylesheet" href="dist/test.css">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
@@ -13,12 +14,14 @@
   <header class="header py-4 shadow-md">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain">
+        <a href="https://storefrontsolutions.shop/"><img src="images/logo.png"  width=260px height=75px alt="Welcome" class="h-12 ml auto"></a>
+    </div>
       </div>
     </div>
   </header>
 
   <!-- MAIN CONTENT -->
+  <canvas id="particle-canvas"></canvas>
   <main class="flex-1 container mx-auto py-12 px-4 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- PRODUCTS SECTION -->
     <section class="lg:col-span-2">
@@ -29,15 +32,14 @@
           <img src="images/shirt.png" alt="Shirt" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
           <h3 class="text-xl font-semibold mb-2">Shirt</h3>
           <p class="text-gray-600 mb-4">$10.00</p>
-          <button class="btn btn-primary w-full" onclick="addToCart('Shirt', 10)">Add to Cart</button>
+          <button class="btn btn primary w-full" onclick="addToCart('Shirt', 10)">Add to Cart</button>
         </div>
-
         <!-- Product 2 -->
         <div class="card flex flex-col items-center">
           <img src="images/pants.png" alt="Jeans" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
           <h3 class="text-xl font-semibold mb-2">Pants</p></h3>
           <p class="text-gray-600 mb-4">$15.00</p>
-          <button class="btn btn-primary w-full" onclick="addToCart('Jeans', 15)">Add to Cart</button>
+          <button class="btn btn primary w-full" onclick="addToCart('Jeans', 15)">Add to Cart</button>
         </div>
       </div>
     </section>
@@ -52,7 +54,7 @@
       <p class="text-lg font-semibold mb-4">Total: $<span id="cartTotal">0</span></p>
 
       <button
-        class="btn btn-accent w-full"
+        class="btn btn primary w-full"
         onclick="checkout()">
         Checkout Items
       </button>
@@ -110,6 +112,6 @@
     window.location.href = "Enter credit card info.html";
   }
 </script>
-
+<script src="dist/particles.js"></script>
 </body>
 </html>
