@@ -235,3 +235,32 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Darker overall products panel */
+.products-section {
+  background: radial-gradient(circle at top left,
+              rgba(15, 23, 42, 0.95),   /* deep navy */
+              #020617);                 /* almost black */
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid rgba(15, 23, 42, 0.9);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.85);
+}
+
+/* Each individual product card */
+.products-section .card {
+  width: 100%;
+  background: radial-gradient(circle at top,
+              rgba(37, 99, 235, 0.45),   /* blue glow */
+              rgba(15, 23, 42, 0.98));   /* dark base */
+  border-radius: 18px;
+  padding: 16px 16px 20px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(30, 64, 175, 0.6);
+}
+
+/* Optional: keep product text readable on dark cards */
+.products-section .card h3,
+.products-section .card p {
+  color: #e5e7eb;
+}
