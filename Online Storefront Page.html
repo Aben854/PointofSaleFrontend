@@ -4,80 +4,127 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Online Storefront</title>
-  <link rel="stylesheet" href="dist/test.css">
+  <link rel="stylesheet" href="dist/storefront.css">
   <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 
-<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+<body>
 
-  <!-- HEADER -->
-  <header class="header py-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <a href="https://storefrontsolutions.shop/">
-          <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml auto">
-        </a>
-      </div>
-    </div>
-  </header>
+<!-- HEADER (invisible bar but still holds logo + cart icon) -->
+<header class="header">
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="https://storefrontsolutions.shop/" class="logo-link">
+      <img
+        src="images/logo.png"
+        width="260"
+        height="75"
+        alt="Storefront Solutions"
+        class="logo-img"
+      >
+    </a>
+
+    <!-- Cart icon: opens / closes drawer -->
+    <button class="cart-icon-button" type="button" onclick="toggleCartDrawer()">
+      <img
+        id="cartIconImage"
+        src="images/empty shopping cart.png"
+        alt="Shopping cart"
+        class="cart-icon-img"
+      >
+    </button>
+  </div>
+</header>
+
 
   <!-- MAIN CONTENT -->
   <canvas id="particle-canvas"></canvas>
-  <main class="flex-1 container mx-auto py-12 px-4 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <main class="page-layout">
     <!-- PRODUCTS SECTION -->
-    <section class="lg:col-span-2">
-      <!-- blue-black panel wrapper -->
-      <div class="products-section">
-        <h2 class="text-3xl font-semibold text-gray-900 mb-8">Products</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Product 1 -->
-          <div class="card flex flex-col items-center">
-            <img src="images/shirt.png" alt="Shirt" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
-            <h3 class="text-xl font-semibold mb-2">Shirt</h3>
-            <p class="text-gray-600 mb-4">$10.00</p>
-            <button class="btn btn primary w-full" onclick="addToCart('Shirt', 10)">Add to Cart</button>
-          </div>
-          <!-- Product 2 -->
-          <div class="card flex flex-col items-center">
-            <img src="images/pants.png" alt="Jeans" class="rounded-lg shadow-soft w-full h-48 object-cover mb-4">
-            <h3 class="text-xl font-semibold mb-2">Pants</h3>
-            <p class="text-gray-600 mb-4">$15.00</p>
-            <button class="btn btn primary w-full" onclick="addToCart('Jeans', 15)">Add to Cart</button>
-          </div>
-        </div>
+    <section class="products-wrapper">
+      <h2 class="section-title">Products</h2>
+
+      <div class="product-grid">
+        <!-- Product 1 -->
+        <article class="product-card">
+          <img src="images/shirt.png" alt="Shirt" class="product-image">
+          <h3 class="product-name">Shirt</h3>
+          <p class="product-price">$10.00</p>
+          <button class="btn-primary" onclick="addToCart('Shirt', 10)">
+            Add to Cart
+          </button>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="product-card">
+          <img src="images/pants.png" alt="Pants" class="product-image">
+          <h3 class="product-name">Pants</h3>
+          <p class="product-price">$15.00</p>
+          <button class="btn-primary" onclick="addToCart('Pants', 15)">
+            Add to Cart
+          </button>
+        </article>
+
+        <!-- Add more products here by copying a product-card block -->
       </div>
     </section>
 
-    <!-- CART SECTION -->
-    <aside class="card lg:col-span-1 sticky top-6 h-fit">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-semibold">Your Cart🛒</h2>
-      </div>
+<!-- CART OVERLAY + SLIDE-IN SIDEBAR -->
+<div id="cartOverlay" class="cart-overlay" onclick="toggleCartDrawer()"></div>
 
-      <ul id="cartItems" class="divide-y divide-gray-200 mb-4"></ul>
-      <p class="text-lg font-semibold mb-4">Total: $<span id="cartTotal">0</span></p>
+<aside id="cartDrawer" class="cart-drawer">
+  <div class="cart-drawer-header">
+    <h2 class="cart-title">Your Cart</h2>
+    <button class="cart-close-btn" type="button" onclick="toggleCartDrawer()">✕</button>
+  </div>
 
-      <button
-        class="btn btn primary w-full"
-        onclick="checkout()">
-        Checkout Items
-      </button>
-    </aside>
-  </main>
+  <ul id="cartItems" class="cart-items-list">
+    <!-- JS injects <li> items -->
+  </ul>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-  </footer>
+  <p class="cart-total">
+    Total: $<span id="cartTotal">0.00</span>
+  </p>
+
+  <button class="btn-primary btn-full" onclick="checkout()">
+    Checkout Items
+  </button>
+</aside>
+
+  <!-- FOOTER (minimal, you can add content) -->
+  <footer class="footer"></footer>
 
   <!-- JAVASCRIPT -->
   <script>
+    // In-memory cart
     let cart = [];
 
+    // Add item and refresh UI
     function addToCart(name, price) {
       cart.push({ name, price });
       updateCartDisplay();
+      updateCartIcon();
     }
 
+    // Remove item by index
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+      updateCartIcon();
+    }
+
+        // Open/close the slide-in cart drawer
+    function toggleCartDrawer() {
+      const drawer = document.getElementById("cartDrawer");
+      const overlay = document.getElementById("cartOverlay");
+      if (!drawer || !overlay) return;
+
+      drawer.classList.toggle("open");
+      overlay.classList.toggle("show");
+    }
+
+    // Update list + total in sidebar
     function updateCartDisplay() {
       const cartList = document.getElementById("cartItems");
       const totalDisplay = document.getElementById("cartTotal");
@@ -87,35 +134,52 @@
 
       cart.forEach((item, index) => {
         total += item.price;
-        cartList.innerHTML += `
-          <li class="flex justify-between items-center py-2">
-            <span>${item.name} - $${item.price}</span>
-            <button class="text-sm text-red-600 hover:underline" onclick="removeFromCart(${index})">Remove</button>
-          </li>`;
+
+        const li = document.createElement("li");
+        li.className = "cart-item";
+
+        li.innerHTML = `
+          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-price">$${item.price.toFixed(2)}</span>
+          <button class="cart-remove-btn" type="button" onclick="removeFromCart(${index})">
+            ✕
+          </button>
+        `;
+
+        cartList.appendChild(li);
       });
 
-      totalDisplay.textContent = total;
+      totalDisplay.textContent = total.toFixed(2);
     }
 
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCartDisplay();
-    }
+    // Swap cart icon image depending on whether cart has items
+ function updateCartIcon() {
+  const icon = document.getElementById("cartIconImage");
+  if (!icon) return;
 
+  const hasItems = cart.length > 0;
+
+  icon.src = hasItems
+    ? "images/full shopping cart.gif"     // cart HAS items
+    : "images/empty shopping cart.png";   // cart is empty (default)
+}
+
+
+    // Checkout: validate and send data to next page
     function checkout() {
       if (cart.length === 0) {
-        alert("Your cart is empty. Please add items before checking out.");
+        alert("Your cart is empty. Please add at least one item before checking out.");
         return;
       }
 
-      // Save cart data to localStorage
       localStorage.setItem("cartData", JSON.stringify(cart));
       localStorage.setItem("cartTotal", document.getElementById("cartTotal").textContent);
 
-      // Redirect to confirmation page
+      // Redirect to payment / confirmation page
       window.location.href = "Enter credit card info.html";
     }
   </script>
+
   <script src="dist/particles.js"></script>
 </body>
 </html>
