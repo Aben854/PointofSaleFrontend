@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="dist/test.css">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+</head>
+
+<body class="bg-bg text-gray-800 font-sans flex flex-col min-h-screen">
+  <!-- HEADER -->
+<header class="header py-4 shadow-md">
+      <div class="flex items-center">
+      <a href="https://storefrontsolutions.shop/"><img src="images/logo.png"  width=260px height=75px alt="Welcome" class="h-12 ml auto"></a>
+    </div>
+  <div class="container mx-auto flex justify-between items-center">
+
+</header>
+
+  <!-- BODY -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <canvas id="particle-canvas"></canvas>
+    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
+      <h1 class="page-title fade-in-title text-3xl font-semibold text-gray-900 mb-4">Log back in.</h1>
+      <p class="text-gray-600 mb-8 subtitle">Please log back in so you can make purchases.</p>
+
+<form action="" class="signup-form space-y-4 text-left">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div class="form-group">
+    <label class="label" for="user_id">Username</label>
+    <input type="text" id="user_id" name="user_id" class="input" placeholder="Create a username" required>
+  </div>
+
+  <div class="form-group">
+    <label class="label" for="password">Password</label>
+    <input type="password" id="password" name="password" class="input" placeholder="Create a password" required>
+  </div>
+
+<br>
+  <button
+    type="button"
+    class="btn btn primary  w-full mt-6"
+    onclick="window.location.href='Online Storefront Page.html'">
+    Login
+  </button>
+</form>
+    </div>
+     <script src="dist/particles.js"></script>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+</body>
+</html>
