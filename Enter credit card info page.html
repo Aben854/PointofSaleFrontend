@@ -4,19 +4,20 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Card Information</title>
-  <link rel="stylesheet" href="dist/pos.css">
+  <link rel="stylesheet" href="dist/test.css">
 </head>
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+  <canvas id="particle-canvas"></canvas>
   <!-- HEADER -->
-<header class="header py-4 shadow-md">
-      <div class="flex items-center">
-      <a href="https://pointofsalefrontend-086m.onrender.com/"><img src="images/logo.png"  width=200px height=75px alt="Welcome" class="h-12 ml auto"></a>
-    </div>
-  <div class="container mx-auto flex justify-between items-center">
-
-</header>
-
+    <a href="https://storefrontsolutions.shop/" class="logo-link">
+      <img
+        src="images/logo.png"
+        width="260"
+        height="75"
+        alt="Storefront Solutions"
+        class="logo-img">
+    </a>
   <!-- MAIN CONTENT -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
     <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
@@ -39,11 +40,11 @@
           <label class="label" for="email">CC</label>
           <input type="email" id="email" name="email" class="input" placeholder="3 Digit Number on the back" required>
         </div>
-
+        <br>
         <button
           type="button"
           class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300"
-          onclick="window.location.href='Place an Order Page.html'">
+          onclick="window.location.href='OrderConfirmationPage.html'">
           Proceed to Checkout
         </button>
       </form>
@@ -62,5 +63,7 @@
   <!-- FOOTER -->
   <footer class="footer">
   </footer>
+  <script src="dist/particles.js"></script>
+  
 </body>
 </html>

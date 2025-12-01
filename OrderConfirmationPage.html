@@ -8,14 +8,16 @@
 </head>
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+  <canvas id="particle-canvas"></canvas>
   <!-- HEADER -->
-  <header class="header py-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain cursor-pointer" onclick="window.location.href='Place an Order Page.html'">
-      </div>
-    </div>
-  </header>
+    <a href="https://storefrontsolutions.shop/" class="logo-link">
+      <img
+        src="images/logo.png"
+        width="260"
+        height="75"
+        alt="Storefront Solutions"
+        class="logo-img">
+    </a>
 
   <!-- MAIN CONTENT -->
   <main class="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
@@ -32,7 +34,7 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <button class="btn btn-primary w-full" onclick="window.location.href='CustomerSettings.html'">Confirm Order</button>
+        <button class="btn btn-primary w-full" onclick="window.location.href='paymentauthorization.html'">Confirm Order</button>
         <button class="btn btn-secondary w-full" onclick="window.location.href='Online Storefront Page.html'">Go Back</button>
       </div>
     </div>
@@ -58,5 +60,6 @@
       document.getElementById("orderTotal").textContent = cartTotal;
     });
   </script>
+  <script src="dist/particles.js"></script>
 </body>
 </html>

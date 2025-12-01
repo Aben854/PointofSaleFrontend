@@ -67,8 +67,8 @@ body {
 }
 
 .cart-icon-img {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   display: block;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9));
   transition: transform 0.18s ease, filter 0.18s ease;

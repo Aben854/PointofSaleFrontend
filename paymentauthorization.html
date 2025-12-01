@@ -4,22 +4,20 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Authorization</title>
-  <link rel="stylesheet" href="dist/pos.css">
+  <link rel="stylesheet" href="dist/test.css">
 </head>
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
-
+  <canvas id="particle-canvas"></canvas>
   <!-- HEADER -->
-  <header class="header py-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <img src="images/logo.png" alt="Logo" class="h-10 w-10 object-contain">
-      </div>
-      <nav class="flex space-x-8 text-white text-lg font-medium">
-      </nav>
-    </div>
-  </header>
-
+    <a href="https://storefrontsolutions.shop/" class="logo-link">
+      <img
+        src="images/logo.png"
+        width="260"
+        height="75"
+        alt="Storefront Solutions"
+        class="logo-img">
+    </a>
   <!-- MAIN CONTENT -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
     <div class="bg-white shadow-soft rounded-xl p-10 w-full max-w-lg">
@@ -43,7 +41,7 @@
 
   <!-- JAVASCRIPT -->
   <script>
-const baseURL = "https://pointofsale-bhvj.onrender.com";
+const baseURL = "https://pointofsaleapi.onrender.com/";
 const btn = document.getElementById("authorizeBtn");
 const responseBox = document.getElementById("responseBox");
 const responseMessage = document.getElementById("responseMessage");
@@ -101,5 +99,6 @@ btn.addEventListener("click", async () => {
   }
 });
   </script>
+  <script src="dist/particles.js"></script>
 </body>
 </html>
