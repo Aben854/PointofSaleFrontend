@@ -4,7 +4,6 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Change Account Details</title>
-  <!-- Use a relative path here so it works on the server -->
   <link rel="stylesheet" href="dist/test.css">
   <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
@@ -17,9 +16,7 @@
         <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml-auto">
       </a>
     </div>
-    <div class="container mx-auto flex justify-between items-center">
-      <!-- (Optional) add a "Back" link or user menu here -->
-    </div>
+    <div class="container mx-auto flex justify-between items-center"></div>
   </header>
 
   <!-- BODY -->
@@ -34,9 +31,7 @@
         Update your information below and save your changes.
       </p>
 
-      <!-- Change Account Details Form -->
-      <!-- Update the action to your real backend route when it's ready -->
-      <form action="/api/account/update" method="POST" class="signup-form space-y-4 text-left">
+      <form id="updateForm" class="signup-form space-y-4 text-left">
         <!-- Name -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
@@ -46,10 +41,9 @@
               id="fName"
               name="fName"
               class="input"
-              value="John"
+              placeholder="John"
               required
             >
-            <!-- prefill from backend / JS -->
           </div>
           <div class="form-group">
             <label class="label" for="lName">Last Name</label>
@@ -58,10 +52,9 @@
               id="lName"
               name="lName"
               class="input"
-              value="Doe"
+              placeholder="Doe"
               required
             >
-            <!-- prefill -->
           </div>
         </div>
 
@@ -73,13 +66,12 @@
             id="email"
             name="email"
             class="input"
-            value="you@example.com"
+            placeholder="you@example.com"
             required
           >
-          <!-- prefill -->
         </div>
 
-        <!-- Username (often locked, but you can keep it editable if you want) -->
+        <!-- Username -->
         <div class="form-group">
           <label class="label" for="user_id">Username</label>
           <input
@@ -87,13 +79,12 @@
             id="user_id"
             name="user_id"
             class="input"
-            value="CurrentUsername"
+            placeholder="username"
             required
           >
-          <!-- prefill -->
         </div>
 
-        <!-- Password (optional: leave blank if not changing) -->
+        <!-- Password -->
         <div class="form-group">
           <label class="label" for="password">New Password (leave blank to keep current)</label>
           <input
@@ -114,10 +105,9 @@
               id="state"
               name="state"
               class="input"
-              value="GA"
+              placeholder="GA"
               required
             >
-            <!-- prefill -->
           </div>
           <div class="form-group">
             <label class="label" for="city">City</label>
@@ -126,10 +116,9 @@
               id="city"
               name="city"
               class="input"
-              value="Atlanta"
+              placeholder="Atlanta"
               required
             >
-            <!-- prefill -->
           </div>
         </div>
 
@@ -142,10 +131,9 @@
               id="zip_code"
               name="zip_code"
               class="input"
-              value="30301"
+              placeholder="30301"
               required
             >
-            <!-- prefill -->
           </div>
           <div class="form-group">
             <label class="label" for="address_line1">Address Line 1</label>
@@ -154,10 +142,9 @@
               id="address_line1"
               name="address_line1"
               class="input"
-              value="123 Main St"
+              placeholder="123 Main St"
               required
             >
-            <!-- prefill -->
           </div>
         </div>
 
@@ -168,10 +155,12 @@
             id="address_line2"
             name="address_line2"
             class="input"
-            value="Apt 4B"
+            placeholder="Apt 4B"
           >
-          <!-- prefill -->
         </div>
+
+        <p id="updateMessage" class="text-sm mt-2"></p>
+
         <br>
         <!-- Buttons -->
         <div class="mt-8 space-y-3">
@@ -197,7 +186,76 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-  </footer>
+  <footer class="footer"></footer>
+
+  <script>
+    const updateForm = document.getElementById("updateForm");
+    const updateMessage = document.getElementById("updateMessage");
+    const backendBase = "https://pointofsalebackendapi.onrender.com";
+
+    // TODO: Load current user data on page load
+    // For now, you'd need to implement /auth/me endpoint in backend
+    // to fetch current user's data and populate the form
+
+    updateForm.addEventListener("submit", async (e) => {
+      if (!updateForm.checkValidity()) {
+        e.preventDefault();
+        updateForm.reportValidity();
+        return;
+      }
+
+      e.preventDefault();
+      updateMessage.textContent = "";
+
+      const fName = document.getElementById("fName").value.trim();
+      const lName = document.getElementById("lName").value.trim();
+
+      const payload = {
+        email: document.getElementById("email").value.trim(),
+        username: document.getElementById("user_id").value.trim(),
+        full_name: `${fName} ${lName}`.trim(),
+        address_line1: document.getElementById("address_line1").value.trim(),
+        address_line2: document.getElementById("address_line2").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        state: document.getElementById("state").value.trim(),
+        zip_code: document.getElementById("zip_code").value.trim()
+      };
+
+      // Only include password if user entered one
+      const password = document.getElementById("password").value;
+      if (password) {
+        payload.password = password;
+      }
+
+      try {
+        // NOTE: You'll need to create this endpoint in your backend
+        const resp = await fetch(`${backendBase}/auth/update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          updateMessage.textContent = data.error || "Failed to update account.";
+          updateMessage.className = "text-sm mt-2 text-red-600";
+          return;
+        }
+
+        updateMessage.textContent = "Account updated successfully!";
+        updateMessage.className = "text-sm mt-2 text-green-600";
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = "Online Storefront Page.html";
+        }, 1500);
+      } catch (err) {
+        console.error("Error updating account:", err);
+        updateMessage.textContent = "Network error. Please try again.";
+        updateMessage.className = "text-sm mt-2 text-red-600";
+      }
+    });
+  </script>
 </body>
 </html>
