@@ -77,6 +77,9 @@
             required
           >
         </div>
+
+        <p id="checkoutMessage" class="text-sm mt-4 text-red-600"></p>
+
         <br>
         <button
           type="button"
@@ -96,20 +99,16 @@
 
     // --- Mask card number: hash all digits except last 4 ---
     function maskCardNumber(cardNumber) {
-      // Keep only digits and limit to 16
       const clean = cardNumber.replace(/\D/g, "").slice(0, 16);
 
       if (clean.length <= 4) {
-        // If 4 or fewer digits, show them all
         return clean.replace(/(.{4})/g, "$1 ").trim();
       }
 
-      // Hash all digits except the last 4
       const hashedPart = clean.slice(0, -4).replace(/\d/g, "#");
       const visiblePart = clean.slice(-4);
       const combined = hashedPart + visiblePart;
 
-      // Format with spaces every 4 characters: "#### #### #### 1234"
       return combined.replace(/(.{4})/g, "$1 ").trim();
     }
 
@@ -133,7 +132,6 @@
     function isValidCardNumber(number) {
       const clean = number.replace(/\D/g, "");
       
-      // Must be 13-19 digits (most cards are 16)
       if (clean.length < 13 || clean.length > 19) {
         return false;
       }
@@ -141,7 +139,6 @@
       let sum = 0;
       let isEven = false;
 
-      // Loop through digits from right to left
       for (let i = clean.length - 1; i >= 0; i--) {
         let digit = parseInt(clean[i], 10);
 
@@ -166,12 +163,12 @@
       const year = parseInt(yearStr, 10);
 
       if (!month || !year || month < 1 || month > 12) {
-        return true; // treat invalid as expired/blocking
+        return true;
       }
 
       const now = new Date();
-      const currentYear = now.getFullYear() % 100;  // last two digits
-      const currentMonth = now.getMonth() + 1;      // 1–12
+      const currentYear = now.getFullYear() % 100;
+      const currentMonth = now.getMonth() + 1;
 
       if (year < currentYear) return true;
       if (year === currentYear && month < currentMonth) return true;
@@ -185,16 +182,16 @@
     const expDateInput = document.getElementById("expDate");
     const expiryMessage = document.getElementById("expiryMessage");
     const checkoutBtn = document.getElementById("checkoutBtn");
+    const checkoutMessage = document.getElementById("checkoutMessage");
+    const backendBase = "https://pointofsalebackendapi.onrender.com";
 
     // Live card type + masking
     cardNumberInput.addEventListener("input", () => {
       const raw = cardNumberInput.value;
       const clean = raw.replace(/\D/g, "").slice(0, 16);
 
-      // Store the actual card number
       actualCardNumber = clean;
 
-      // Show card type dialog (based on real digits, before masking)
       const type = detectCardType(clean);
       if (type) {
         cardTypeDisplay.textContent = `Card Type: ${type}`;
@@ -204,32 +201,26 @@
         cardTypeDisplay.textContent = "";
       }
 
-      // Clear validation message while typing
       cardValidation.textContent = "";
 
-      // While typing, show all digits formatted with spaces
       if (isCardNumberFocused) {
         cardNumberInput.value = formatCardNumber(clean);
       }
     });
 
-    // When user focuses on the card number field, show all digits
     cardNumberInput.addEventListener("focus", () => {
       isCardNumberFocused = true;
       if (actualCardNumber) {
         cardNumberInput.value = formatCardNumber(actualCardNumber);
       }
-      // Clear validation message when focusing
       cardValidation.textContent = "";
     });
 
-    // When user leaves the card number field, apply masking and validate
     cardNumberInput.addEventListener("blur", () => {
       isCardNumberFocused = false;
       if (actualCardNumber) {
         cardNumberInput.value = maskCardNumber(actualCardNumber);
         
-        // Validate the card number
         if (actualCardNumber.length > 0 && !isValidCardNumber(actualCardNumber)) {
           cardValidation.textContent = "Invalid card number. Please check and try again.";
         } else {
@@ -255,8 +246,10 @@
       }
     });
 
-    // Prevent progression if expired or invalid card
-    checkoutBtn.addEventListener("click", () => {
+    // Process checkout with backend
+    checkoutBtn.addEventListener("click", async () => {
+      checkoutMessage.textContent = "";
+
       // Validate card number first
       if (!actualCardNumber || !isValidCardNumber(actualCardNumber)) {
         cardValidation.textContent = "Please enter a valid card number before proceeding.";
@@ -272,10 +265,59 @@
         return;
       }
 
-      // Clear any previous errors and allow progression
+      const cvv = document.getElementById("cvv").value.trim();
+      if (!cvv || cvv.length < 3) {
+        checkoutMessage.textContent = "Please enter a valid CVV.";
+        return;
+      }
+
+      // Clear any previous errors
       cardValidation.textContent = "";
       expiryMessage.textContent = "";
-      window.location.href = "OrderConfirmationPage.html";
+
+      // Get last 4 digits for backend
+      const last4 = actualCardNumber.slice(-4);
+
+      // TODO: Get actual customer ID and order ID
+      // For now using placeholder values - you'd get these from session/localStorage
+      const customerId = 1; // Replace with actual logged-in customer ID
+      const orderId = `ORD${Date.now()}`; // Generate unique order ID
+      const amount = 99.99; // Replace with actual cart total
+
+      try {
+        const resp = await fetch(`${backendBase}/orders/checkout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId,
+            customerId,
+            amount,
+            last4
+          })
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          checkoutMessage.textContent = data.error || "Checkout failed. Please try again.";
+          return;
+        }
+
+        // Check authorization result
+        if (data.result === "SUCCESS") {
+          // Redirect to confirmation page
+          window.location.href = "OrderConfirmationPage.html";
+        } else if (data.result === "INSUFFICIENT_FUNDS") {
+          checkoutMessage.textContent = "Insufficient funds. Please use a different card.";
+        } else if (data.result === "INCORRECT_DETAILS") {
+          checkoutMessage.textContent = "Card details incorrect. Please check your information.";
+        } else {
+          checkoutMessage.textContent = "Server error. Please try again later.";
+        }
+      } catch (err) {
+        console.error("Error during checkout:", err);
+        checkoutMessage.textContent = "Network error. Please try again.";
+      }
     });
   </script>
 
