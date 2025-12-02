@@ -98,8 +98,24 @@
       return;
     }
 
-    // If you later add a real fetch() to /auth/register, do it here.
-    // For now, after successful validation, go to storefront page:
+   const payload = {
+  email: document.getElementById("email").value.trim(),
+  username: document.getElementById("user_id").value.trim(),
+  password: document.getElementById("password").value,
+  full_name: `${fName} ${lName}`.trim(),
+  address_line1: document.getElementById("address_line1").value.trim(),
+  address_line2: document.getElementById("address_line2").value.trim(),
+  city: document.getElementById("city").value.trim(),
+  state: document.getElementById("state").value.trim(),
+  zip_code: document.getElementById("zip_code").value.trim()
+};
+
+fetch("https://pointofsalebackendapi.onrender.com/auth/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
     e.preventDefault(); // prevent actual form submit if you're not posting yet
     window.location.href = "Online Storefront Page.html";
   });
