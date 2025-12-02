@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Account Details</title>
+  <link rel="stylesheet" href="/Users/bm570/Desktop/Classes/Fall 2025/IS 4880/PointofSaleFrontend/dist/test.css">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+</head>
+
+<body class="bg-bg text-gray-800 font-sans flex flex-col min-h-screen">
+  <!-- HEADER -->
+  <header class="header py-4 shadow-md">
+    <div class="flex items-center">
+      <a href="https://storefrontsolutions.shop/">
+        <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml auto">
+      </a>
+    </div>
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- (Optional) add a "Back" link or user menu here -->
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
+      <h1 class="page-title fade-in-title text-3xl font-semibold text-gray-900 mb-4">
+        Change Account Details
+      </h1>
+      <p class="text-gray-600 mb-8 subtitle">
+        Update your information below and save your changes.
+      </p>
+
+      <!-- Change Account Details Form -->
+      <!-- Update the action to your real backend route when it's ready -->
+      <form action="/api/account/update" method="POST" class="signup-form space-y-4 text-left">
+        <!-- Name -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="label" for="fName">First Name</label>
+            <input
+              type="text"
+              id="fName"
+              name="fName"
+              class="input"
+              value="John"            
+              <!-- prefill from backend / JS -->
+          </div>
+          <div class="form-group">
+            <label class="label" for="lName">Last Name</label>
+            <input
+              type="text"
+              id="lName"
+              name="lName"
+              class="input"
+              value="Doe"             <!-- prefill -->
+              required
+            >
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="label" for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="input"
+            value="you@example.com"   <!-- prefill -->
+            required
+          >
+        </div>
+
+        <!-- Username (often locked, but you can keep it editable if you want) -->
+        <div class="form-group">
+          <label class="label" for="user_id">Username</label>
+          <input
+            type="text"
+            id="user_id"
+            name="user_id"
+            class="input"
+            value="CurrentUsername"   <!-- prefill -->
+            required
+          >
+        </div>
+
+        <!-- Password (optional: leave blank if not changing) -->
+        <div class="form-group">
+          <label class="label" for="password">New Password (leave blank to keep current)</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="input"
+            placeholder="Enter a new password"
+          >
+        </div>
+
+        <!-- Location -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="label" for="state">State</label>
+            <input
+              type="text"
+              id="state"
+              name="state"
+              class="input"
+              value="GA"              <!-- prefill -->
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label class="label" for="city">City</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              class="input"
+              value="Atlanta"         <!-- prefill -->
+              required
+            >
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="label" for="zip_code">Zip Code</label>
+            <input
+              type="text"
+              id="zip_code"
+              name="zip_code"
+              class="input"
+              value="30301"           <!-- prefill -->
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label class="label" for="address_line1">Address Line 1</label>
+            <input
+              type="text"
+              id="address_line1"
+              name="address_line1"
+              class="input"
+              value="123 Main St"     <!-- prefill -->
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="address_line2">Address Line 2</label>
+          <input
+            type="text"
+            id="address_line2"
+            name="address_line2"
+            class="input"
+            value="Apt 4B"           <!-- prefill -->
+          >
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-8 space-y-3">
+          <button
+            type="submit"
+            class="btn btn primary w-full"
+          >
+            Save Changes
+          </button>
+
+          <button
+            type="button"
+            class="btn w-full"
+            onclick="window.location.href='Online Storefront Page.html'"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script src="dist/particles.js"></script>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+  </footer>
+</body>
+</html>

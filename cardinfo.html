@@ -9,61 +9,178 @@
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
   <canvas id="particle-canvas"></canvas>
+
   <!-- HEADER -->
-    <a href="https://storefrontsolutions.shop/" class="logo-link">
-      <img
-        src="images/logo.png"
-        width="260"
-        height="75"
-        alt="Storefront Solutions"
-        class="logo-img">
-    </a>
+  <a href="https://storefrontsolutions.shop/" class="logo-link">
+    <img
+      src="images/logo.png"
+      width="260"
+      height="75"
+      alt="Storefront Solutions"
+      class="logo-img">
+  </a>
+
   <!-- MAIN CONTENT -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
     <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
       <h2 class="text-3xl font-semibold text-gray-900 mb-4">Enter your card details.</h2>
       <p class="text-gray-600 mb-8">Details can be changed later from the settings page.</p>
 
-      <form action="accountcreation.php" method="POST" class="space-y-4 text-left">
+      <form id="cardForm">
+        <!-- First row: Card Number + Expiration Date -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Card Number -->
           <div class="form-group">
-            <label class="cardNumber" for="Cardnumber">Card Number:</label>
-            <input type="text" id="fName" name="fName" class="input" placeholder="10-Digit Card Number" required>
+            <label class="label" for="cardNumber">Card Number</label>
+            <input
+              type="text"
+              id="cardNumber"
+              name="cardNumber"
+              class="input"
+              placeholder="16-digit card number"
+              maxlength="19"
+              required
+            >
+            <!-- Card type dialog -->
+            <p id="cardType" class="text-sm mt-2 text-gray-600"></p>
           </div>
+
+          <!-- Expiration Date -->
           <div class="form-group">
-            <label class="label" for="lName">Expiration Date</label>
-            <input type="text" id="lName" name="lName" class="input" placeholder="Expiration Date" required>
+            <label class="label" for="expDate">Expiration Date</label>
+            <input
+              type="text"
+              id="expDate"
+              name="expDate"
+              class="input"
+              placeholder="MM/YY"
+              maxlength="5"
+              required
+            >
+            <!-- Expiration status dialog -->
+            <p id="expiryMessage" class="text-sm mt-2 text-red-600"></p>
           </div>
+        </div>
+        
+        <!-- CVV -->
+        <div class="form-group mt-4">
+          <label class="label" for="cvv">CVV</label>
+          <input
+            type="text"
+            id="cvv"
+            name="cvv"
+            class="input"
+            placeholder="3-digit number on the back"
+            maxlength="4"
+            required
+          >
         </div>
 
-        <div class="form-group">
-          <label class="label" for="email">CC</label>
-          <input type="email" id="email" name="email" class="input" placeholder="3 Digit Number on the back" required>
-        </div>
-        <br>
         <button
           type="button"
+          id="checkoutBtn"
           class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300"
-          onclick="window.location.href='OrderConfirmationPage.html'">
+        >
           Proceed to Checkout
         </button>
       </form>
     </div>
   </main>
-<script>
-  function maskCardNumber(cardNumber) {
-  // Remove spaces or hyphens
-  const clean = cardNumber.replace(/\D/g, "");
 
-  // Mask all but last 4
-  const masked = clean.slice(-4).padStart(clean.length, "*");
-  return masked.replace(/(.{4})/g, "$1 ");
-}
-</script>
+  <!-- SCRIPTS -->
+  <script>
+    // --- Optional: Mask card number (keeps same visual style as other inputs) ---
+    function maskCardNumber(cardNumber) {
+      const clean = cardNumber.replace(/\D/g, "").slice(0, 16); // max 16 digits
+      const masked = clean.slice(-4).padStart(clean.length, "*");
+      return masked.replace(/(.{4})/g, "$1 ").trim();
+    }
+
+    // --- Card type detection ---
+    function detectCardType(number) {
+      // Remove non-digits
+      const clean = number.replace(/\D/g, "");
+      if (/^4/.test(clean)) return "Visa";
+      if (/^5[1-5]/.test(clean)) return "MasterCard";
+      if (/^3[47]/.test(clean)) return "American Express";
+      if (/^6(?:011|5)/.test(clean)) return "Discover";
+      return "";
+    }
+
+    // --- Expiration check ---
+    function isExpired(dateStr) {
+      const [monthStr, yearStr] = dateStr.split("/");
+      const month = parseInt(monthStr, 10);
+      const year = parseInt(yearStr, 10);
+
+      if (!month || !year || month < 1 || month > 12) {
+        return true; // treat invalid as expired/blocking
+      }
+
+      const now = new Date();
+      const currentYear = now.getFullYear() % 100;     // last two digits
+      const currentMonth = now.getMonth() + 1;         // 1–12
+
+      if (year < currentYear) return true;
+      if (year === currentYear && month < currentMonth) return true;
+      return false;
+    }
+
+    // --- Hook up DOM elements ---
+    const cardNumberInput = document.getElementById("cardNumber");
+    const cardTypeDisplay = document.getElementById("cardType");
+    const expDateInput = document.getElementById("expDate");
+    const expiryMessage = document.getElementById("expiryMessage");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    // Live card type + masking
+    cardNumberInput.addEventListener("input", () => {
+      const raw = cardNumberInput.value;
+      const clean = raw.replace(/\D/g, "").slice(0, 16);
+
+      // Show card type dialog
+      const type = detectCardType(clean);
+      cardTypeDisplay.textContent = type ? `Card Type: ${type}` : "";
+
+      // Apply masking visually
+      cardNumberInput.value = maskCardNumber(clean);
+    });
+
+    // Live expiration validation
+    expDateInput.addEventListener("input", () => {
+      let value = expDateInput.value.replace(/\D/g, "");
+      if (value.length >= 3) {
+        value = value.slice(0, 4);
+        expDateInput.value = value.slice(0, 2) + "/" + value.slice(2);
+      } else {
+        expDateInput.value = value;
+      }
+
+      if (expDateInput.value.length === 5 && isExpired(expDateInput.value)) {
+        expiryMessage.textContent = "This card is expired. Please use another card.";
+      } else {
+        expiryMessage.textContent = "";
+      }
+    });
+
+    // Prevent progression if expired
+    checkoutBtn.addEventListener("click", () => {
+      const expVal = expDateInput.value.trim();
+
+      if (!expVal || expVal.length !== 5 || isExpired(expVal)) {
+        expiryMessage.textContent = "Cannot proceed with an expired or invalid expiration date.";
+        expDateInput.focus();
+        return;
+      }
+
+      // Clear any previous error and allow progression
+      expiryMessage.textContent = "";
+      window.location.href = "OrderConfirmationPage.html";
+    });
+  </script>
+
   <!-- FOOTER -->
-  <footer class="footer">
-  </footer>
+  <footer class="footer"></footer>
   <script src="dist/particles.js"></script>
-  
 </body>
 </html>
