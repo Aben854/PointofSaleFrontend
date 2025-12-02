@@ -58,6 +58,34 @@ body {
   height: auto;
 }
 
+/* NEW: right-side container for search + cart */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* NEW: search input styling */
+.search-input {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  min-width: 180px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* NEW: slightly smaller btn in header */
+.header-search-btn {
+  padding: 6px 16px;
+  font-size: 0.85rem;
+}
+
 /* Cart icon in header */
 .cart-icon-button {
   border: none;
@@ -208,7 +236,6 @@ body {
   gap: 20px;
 }
 
-/* Make it responsive so it collapses on smaller screens */
 @media (max-width: 1200px) {
   .product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -227,7 +254,6 @@ body {
   }
 }
 
-
 /* Product cards – width aligned with images */
 .product-card {
   background: radial-gradient(circle at top,
@@ -238,16 +264,21 @@ body {
   box-shadow: 0 18px 36px rgba(15, 23, 42, 0.9);
   border: 1px solid rgba(30, 64, 175, 0.8);
 
-  width: 100%;                /* take full grid cell width */
-  max-width: 300px;           /* but keep it close to image width */
-  margin-inline: auto;        /* center within the cell */
+  width: 100%;
+  max-width: 300px;
+  margin-inline: auto;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* image takes full card width but keeps original ratio */
+/* NEW: highlight class when search jumps to a product */
+.highlight-product {
+  outline: 3px solid #facc15;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.45), 0 18px 36px rgba(15, 23, 42, 0.9);
+}
+
 .product-image {
   display: block;
   width: 100%;
@@ -273,7 +304,6 @@ body {
    Buttons
    ========= */
 
-/* Buttons – old style + glow */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -288,10 +318,9 @@ body {
   cursor: pointer;
   text-decoration: none;
 
-  background: linear-gradient(135deg, #3b82f6, #22c55e); /* old gradient */
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
   color: #0b1120;
 
-  /* big glow */
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
 
   transition:
@@ -306,14 +335,13 @@ body {
   background: #1d4ed8;
   color: #e5e7eb;
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 24px 55px rgba(15, 23, 42, 1); /* extra glow on hover */
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 1);
 }
 
 .btn-primary:active {
   transform: translateY(1px) scale(0.97);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.9);
 }
-
 
 .btn-full {
   width: 100%;
@@ -352,7 +380,6 @@ body {
   border-bottom: 1px solid rgba(148, 163, 184, 0.35);
 }
 
-/* individual cart item */
 .cart-item {
   display: grid;
   grid-template-columns: 1.3fr auto auto;
