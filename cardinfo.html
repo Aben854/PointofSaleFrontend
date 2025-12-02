@@ -42,7 +42,9 @@
               required
             >
             <!-- Card type dialog -->
-            <p id="cardType" class="text-sm mt-2 text-gray-600"></p>
+            <p id="cardType" class="text-sm mt-2 text-blue-600 font-medium"></p>
+            <!-- Card validation message -->
+            <p id="cardValidation" class="text-sm mt-1 text-red-600"></p>
           </div>
 
           <!-- Expiration Date -->
@@ -75,12 +77,11 @@
             required
           >
         </div>
-
+        <br>
         <button
           type="button"
           id="checkoutBtn"
-          class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300"
-        >
+          class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300">
           Proceed to Checkout
         </button>
       </form>
@@ -89,22 +90,73 @@
 
   <!-- SCRIPTS -->
   <script>
-    // --- Optional: Mask card number (keeps same visual style as other inputs) ---
+    // Store the actual card number separately
+    let actualCardNumber = "";
+    let isCardNumberFocused = false;
+
+    // --- Mask card number: hash all digits except last 4 ---
     function maskCardNumber(cardNumber) {
-      const clean = cardNumber.replace(/\D/g, "").slice(0, 16); // max 16 digits
-      const masked = clean.slice(-4).padStart(clean.length, "*");
-      return masked.replace(/(.{4})/g, "$1 ").trim();
+      // Keep only digits and limit to 16
+      const clean = cardNumber.replace(/\D/g, "").slice(0, 16);
+
+      if (clean.length <= 4) {
+        // If 4 or fewer digits, show them all
+        return clean.replace(/(.{4})/g, "$1 ").trim();
+      }
+
+      // Hash all digits except the last 4
+      const hashedPart = clean.slice(0, -4).replace(/\d/g, "#");
+      const visiblePart = clean.slice(-4);
+      const combined = hashedPart + visiblePart;
+
+      // Format with spaces every 4 characters: "#### #### #### 1234"
+      return combined.replace(/(.{4})/g, "$1 ").trim();
+    }
+
+    // --- Format card number with spaces (no masking) ---
+    function formatCardNumber(cardNumber) {
+      const clean = cardNumber.replace(/\D/g, "").slice(0, 16);
+      return clean.replace(/(.{4})/g, "$1 ").trim();
     }
 
     // --- Card type detection ---
     function detectCardType(number) {
-      // Remove non-digits
       const clean = number.replace(/\D/g, "");
       if (/^4/.test(clean)) return "Visa";
       if (/^5[1-5]/.test(clean)) return "MasterCard";
       if (/^3[47]/.test(clean)) return "American Express";
       if (/^6(?:011|5)/.test(clean)) return "Discover";
       return "";
+    }
+
+    // --- Luhn algorithm for card validation ---
+    function isValidCardNumber(number) {
+      const clean = number.replace(/\D/g, "");
+      
+      // Must be 13-19 digits (most cards are 16)
+      if (clean.length < 13 || clean.length > 19) {
+        return false;
+      }
+
+      let sum = 0;
+      let isEven = false;
+
+      // Loop through digits from right to left
+      for (let i = clean.length - 1; i >= 0; i--) {
+        let digit = parseInt(clean[i], 10);
+
+        if (isEven) {
+          digit *= 2;
+          if (digit > 9) {
+            digit -= 9;
+          }
+        }
+
+        sum += digit;
+        isEven = !isEven;
+      }
+
+      return sum % 10 === 0;
     }
 
     // --- Expiration check ---
@@ -118,8 +170,8 @@
       }
 
       const now = new Date();
-      const currentYear = now.getFullYear() % 100;     // last two digits
-      const currentMonth = now.getMonth() + 1;         // 1–12
+      const currentYear = now.getFullYear() % 100;  // last two digits
+      const currentMonth = now.getMonth() + 1;      // 1–12
 
       if (year < currentYear) return true;
       if (year === currentYear && month < currentMonth) return true;
@@ -129,6 +181,7 @@
     // --- Hook up DOM elements ---
     const cardNumberInput = document.getElementById("cardNumber");
     const cardTypeDisplay = document.getElementById("cardType");
+    const cardValidation = document.getElementById("cardValidation");
     const expDateInput = document.getElementById("expDate");
     const expiryMessage = document.getElementById("expiryMessage");
     const checkoutBtn = document.getElementById("checkoutBtn");
@@ -138,12 +191,51 @@
       const raw = cardNumberInput.value;
       const clean = raw.replace(/\D/g, "").slice(0, 16);
 
-      // Show card type dialog
-      const type = detectCardType(clean);
-      cardTypeDisplay.textContent = type ? `Card Type: ${type}` : "";
+      // Store the actual card number
+      actualCardNumber = clean;
 
-      // Apply masking visually
-      cardNumberInput.value = maskCardNumber(clean);
+      // Show card type dialog (based on real digits, before masking)
+      const type = detectCardType(clean);
+      if (type) {
+        cardTypeDisplay.textContent = `Card Type: ${type}`;
+      } else if (clean.length > 0) {
+        cardTypeDisplay.textContent = "Unknown card type";
+      } else {
+        cardTypeDisplay.textContent = "";
+      }
+
+      // Clear validation message while typing
+      cardValidation.textContent = "";
+
+      // While typing, show all digits formatted with spaces
+      if (isCardNumberFocused) {
+        cardNumberInput.value = formatCardNumber(clean);
+      }
+    });
+
+    // When user focuses on the card number field, show all digits
+    cardNumberInput.addEventListener("focus", () => {
+      isCardNumberFocused = true;
+      if (actualCardNumber) {
+        cardNumberInput.value = formatCardNumber(actualCardNumber);
+      }
+      // Clear validation message when focusing
+      cardValidation.textContent = "";
+    });
+
+    // When user leaves the card number field, apply masking and validate
+    cardNumberInput.addEventListener("blur", () => {
+      isCardNumberFocused = false;
+      if (actualCardNumber) {
+        cardNumberInput.value = maskCardNumber(actualCardNumber);
+        
+        // Validate the card number
+        if (actualCardNumber.length > 0 && !isValidCardNumber(actualCardNumber)) {
+          cardValidation.textContent = "Invalid card number. Please check and try again.";
+        } else {
+          cardValidation.textContent = "";
+        }
+      }
     });
 
     // Live expiration validation
@@ -163,8 +255,15 @@
       }
     });
 
-    // Prevent progression if expired
+    // Prevent progression if expired or invalid card
     checkoutBtn.addEventListener("click", () => {
+      // Validate card number first
+      if (!actualCardNumber || !isValidCardNumber(actualCardNumber)) {
+        cardValidation.textContent = "Please enter a valid card number before proceeding.";
+        cardNumberInput.focus();
+        return;
+      }
+
       const expVal = expDateInput.value.trim();
 
       if (!expVal || expVal.length !== 5 || isExpired(expVal)) {
@@ -173,7 +272,8 @@
         return;
       }
 
-      // Clear any previous error and allow progression
+      // Clear any previous errors and allow progression
+      cardValidation.textContent = "";
       expiryMessage.textContent = "";
       window.location.href = "OrderConfirmationPage.html";
     });
