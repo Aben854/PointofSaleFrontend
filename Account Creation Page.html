@@ -25,7 +25,7 @@
       <h1 class="page-title fade-in-title text-3xl font-semibold text-gray-900 mb-4">Create Your Account</h1>
       <p class="text-gray-600 mb-8 subtitle">Details can be changed later from the settings page.</p>
 
-<form action="" class="signup-form space-y-4 text-left">
+<form id="signupForm" class="signup-form space-y-4 text-left">
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div class="form-group">
       <label class="label" for="fName">First Name</label>
@@ -78,14 +78,33 @@
     <label class="label" for="address_line2">Address Line 2</label>
     <input type="text" id="address_line2" name="address_line2" class="input" placeholder="Apt 4B">
   </div>
-<br>
+
+  <br>
   <button
-    type="button"
-    class="btn btn primary  w-full mt-6"
-    onclick="window.location.href='Online Storefront Page.html'">
+    type="submit"
+    class="btn btn primary w-full mt-6">
     Verify Email and Sign Up
   </button>
 </form>
+
+<script>
+  const signupForm = document.getElementById("signupForm");
+
+  signupForm.addEventListener("submit", (e) => {
+    // If form is invalid, stop and show browser's built-in messages
+    if (!signupForm.checkValidity()) {
+      e.preventDefault();
+      signupForm.reportValidity();
+      return;
+    }
+
+    // If you later add a real fetch() to /auth/register, do it here.
+    // For now, after successful validation, go to storefront page:
+    e.preventDefault(); // prevent actual form submit if you're not posting yet
+    window.location.href = "Online Storefront Page.html";
+  });
+</script>
+
     </div>
      <script src="dist/particles.js"></script>
   </main>
