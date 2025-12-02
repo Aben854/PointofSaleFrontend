@@ -4,7 +4,8 @@
   <meta charset="utf-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Change Account Details</title>
-  <link rel="stylesheet" href="/Users/bm570/Desktop/Classes/Fall 2025/IS 4880/PointofSaleFrontend/dist/test.css">
+  <!-- Use a relative path here so it works on the server -->
+  <link rel="stylesheet" href="dist/test.css">
   <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 
@@ -13,7 +14,7 @@
   <header class="header py-4 shadow-md">
     <div class="flex items-center">
       <a href="https://storefrontsolutions.shop/">
-        <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml auto">
+        <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml-auto">
       </a>
     </div>
     <div class="container mx-auto flex justify-between items-center">
@@ -45,8 +46,10 @@
               id="fName"
               name="fName"
               class="input"
-              value="John"            
-              <!-- prefill from backend / JS -->
+              value="John"
+              required
+            >
+            <!-- prefill from backend / JS -->
           </div>
           <div class="form-group">
             <label class="label" for="lName">Last Name</label>
@@ -55,9 +58,10 @@
               id="lName"
               name="lName"
               class="input"
-              value="Doe"             <!-- prefill -->
+              value="Doe"
               required
             >
+            <!-- prefill -->
           </div>
         </div>
 
@@ -69,9 +73,10 @@
             id="email"
             name="email"
             class="input"
-            value="you@example.com"   <!-- prefill -->
+            value="you@example.com"
             required
           >
+          <!-- prefill -->
         </div>
 
         <!-- Username (often locked, but you can keep it editable if you want) -->
@@ -82,9 +87,10 @@
             id="user_id"
             name="user_id"
             class="input"
-            value="CurrentUsername"   <!-- prefill -->
+            value="CurrentUsername"
             required
           >
+          <!-- prefill -->
         </div>
 
         <!-- Password (optional: leave blank if not changing) -->
@@ -108,9 +114,10 @@
               id="state"
               name="state"
               class="input"
-              value="GA"              <!-- prefill -->
+              value="GA"
               required
             >
+            <!-- prefill -->
           </div>
           <div class="form-group">
             <label class="label" for="city">City</label>
@@ -119,9 +126,10 @@
               id="city"
               name="city"
               class="input"
-              value="Atlanta"         <!-- prefill -->
+              value="Atlanta"
               required
             >
+            <!-- prefill -->
           </div>
         </div>
 
@@ -134,9 +142,10 @@
               id="zip_code"
               name="zip_code"
               class="input"
-              value="30301"           <!-- prefill -->
+              value="30301"
               required
             >
+            <!-- prefill -->
           </div>
           <div class="form-group">
             <label class="label" for="address_line1">Address Line 1</label>
@@ -145,9 +154,10 @@
               id="address_line1"
               name="address_line1"
               class="input"
-              value="123 Main St"     <!-- prefill -->
+              value="123 Main St"
               required
             >
+            <!-- prefill -->
           </div>
         </div>
 
@@ -158,8 +168,9 @@
             id="address_line2"
             name="address_line2"
             class="input"
-            value="Apt 4B"           <!-- prefill -->
+            value="Apt 4B"
           >
+          <!-- prefill -->
         </div>
 
         <!-- Buttons -->
