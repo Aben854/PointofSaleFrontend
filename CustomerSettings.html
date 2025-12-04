@@ -1,33 +1,75 @@
 <!DOCTYPE html>
-<html lang = "en">
-
+<html lang="en">
 <head>
-<meta charset="utf-8">    
-    <title>Customer Settings</title>
-    <link rel="stylesheet" type="text/css" href="test.css">
-    <link rel="icon" type="image/x-icon" href="../POSFrontend/pics/cart.ico">
-    <src script=""></src>
-
+  <meta charset="utf-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Settings</title>
+  <link rel="stylesheet" href="dist/test.css">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 
-<body>
-  <a href="../POSFrontend/index.html">
-  <img src="../POSFrontend/pics/logo.png" alt="Logo" title="basic logo, will be changed" height="auto">
-  </a>
+<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
+  <canvas id="particle-canvas"></canvas>
+  <!-- HEADER -->
+  <header class="header py-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="Online Storefront Page.html" class="logo-link">
+          <img
+            src="images/logo.png"
+            width="260"
+            height="75"
+            alt="Storefront Solutions"
+            class="logo-img">
+        </a>
+      </div>
+    </div>
+  </header>
 
+  <!-- MAIN -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
+      <h2 class="page-title text-3xl font-semibold text-gray-900 mb-4">
+        Customer Settings
+      </h2>
 
-  <h2>Customer Settings</h2>
+      <p class="text-gray-600 mb-6">
+        View or change your details.
+      </p>
 
-  <!--display all of customers's current information and have an option to change it on the page -->
+      <!-- Placeholder / future form area -->
+      <p class="text-gray-500 mb-8">
+        This is where your customer information and settings will appear.
+      </p>
 
-  <h3>View or change your details.</h3>
+      <h3 class="text-xl font-semibold mb-3">
+        Are the updated settings correct?
+      </h3>
 
-  <p>Placeholder for customer settings</p>
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <input type="checkbox" id="Correct" name="Correct" value="confirm" class="mr-2">
+        <label for="Correct" class="text-gray-700">Yes!</label>
+      </div>
 
-  <h3>Are the updated settings correct?</h3>
-  <input type="checkbox" id="Correct" name="Yes!" value="confirm">
-  <label for="confirm"> Yes! </label><br>
-  <a href="../POSFrontend/index.html" class="button">Confirm</a>
+      <!-- Confirm / back buttons -->
+      <div class="space-y-3">
+        <!-- Confirm button (can later be wired to save) -->
+        <button class="btn btn-primary w-full">
+          Confirm Settings
+        </button>
+
+        <!-- Back to Storefront button -->
+        <a
+          href="Online Storefront Page.html"
+          class="btn btn-secondary w-full inline-block text-center">
+          Back to Storefront
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer"></footer>
+  <script src="dist/particles.js"></script>
 </body>
-
 </html>

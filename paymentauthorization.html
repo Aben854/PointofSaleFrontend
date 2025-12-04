@@ -9,96 +9,175 @@
 
 <body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
   <canvas id="particle-canvas"></canvas>
+
   <!-- HEADER -->
-    <a href="https://storefrontsolutions.shop/" class="logo-link">
-      <img
-        src="images/logo.png"
-        width="260"
-        height="75"
-        alt="Storefront Solutions"
-        class="logo-img">
-    </a>
+  <a href="https://storefrontsolutions.shop/" class="logo-link">
+    <img
+      src="images/logo.png"
+      width="260"
+      height="75"
+      alt="Storefront Solutions"
+      class="logo-img">
+  </a>
+
   <!-- MAIN CONTENT -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
     <div class="bg-white shadow-soft rounded-xl p-10 w-full max-w-lg">
       <p class="text-gray-600 mb-8">
-        Click below to authorize your payment using your provided payment information. 
+        Click below to authorize your payment using your provided payment information.
       </p>
 
-      <button id="authorizeBtn" class="btn btn-primary w-full hover:bg-blue-700 transition duration-300">
+      <button
+        id="authorizeBtn"
+        class="btn btn-primary hover:bg-blue-700 transition duration-300">
         Authorize Payment
       </button>
 
-      <div id="responseBox" class="mt-8 hidden">
+      <!-- Response area: hidden until we have a result -->
+      <div id="responseBox" class="mt-8" style="display:none;">
         <div id="responseMessage" class="text-lg"></div>
+
+        <!-- This is ONLY shown if backend result === "SUCCESS" -->
+        <div id="successActions" class="mt-6" style="display:none;">
+          <a
+            href="CustomerSettings.html"
+            class="btn btn-primary hover:bg-blue-700 transition duration-300">
+            Go to Customer Settings
+          </a>
+        </div>
       </div>
     </div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-  </footer>
+  <footer class="footer"></footer>
 
-  <!-- JAVASCRIPT -->
   <script>
-const baseURL = "https://pointofsaleapi.onrender.com/";
-const btn = document.getElementById("authorizeBtn");
-const responseBox = document.getElementById("responseBox");
-const responseMessage = document.getElementById("responseMessage");
+    const backendBase = "https://pointofsalebackendapi.onrender.com";
 
-btn.addEventListener("click", async () => {
-  const rand = Math.random() * 100;
-  let endpoint = "";
-  let errorType = "";
+    const authorizeBtn    = document.getElementById("authorizeBtn");
+    const responseBox     = document.getElementById("responseBox");
+    const responseMessage = document.getElementById("responseMessage");
+    const successActions  = document.getElementById("successActions");
 
-  if (rand <= 60) {
-    endpoint = "/success";
-  } else if (rand <= 77) {
-    endpoint = "/incorrect-card";
-    errorType = "incorrect-card";
-  } else if (rand <= 94) {
-    endpoint = "/insufficient-funds";
-    errorType = "insufficient-funds";
-  } else {
-    endpoint = "/error500";
-    errorType = "server-error";
-  }
-
-  try {
-    const res = await fetch(baseURL + endpoint);
-    const data = await res.json();
-
-    // Manually decide success/failure based on endpoint
-    if (endpoint === "/success") {
-      responseBox.classList.remove("hidden");
-      responseMessage.className = "alert-success text-lg";
-      responseMessage.innerHTML = `✅ <strong>Success:</strong> ${data.message || "Payment authorized successfully!"}`;
-    } else {
-      throw new Error(errorType);
-    }
-  } catch (err) {
-    responseBox.classList.remove("hidden");
-    responseMessage.className = "alert-error text-lg";
-
-    let errorMessage = "";
-    switch (err.message) {
-      case "incorrect-card":
-        errorMessage = "❌ Incorrect card details entered. Please check your card number, expiry date, or CVV and try again.";
-        break;
-      case "insufficient-funds":
-        errorMessage = "💸 Your payment could not be processed due to insufficient funds in your account.";
-        break;
-      case "server-error":
-        errorMessage = "⚠️ Internal Server Error (500). Please try again later — the payment service encountered an issue.";
-        break;
-      default:
-        errorMessage = "❌ An unknown error occurred. Please try again.";
+    // Optional: pull better data if available in localStorage
+    function getCurrentCustomerId() {
+      try {
+        const raw = localStorage.getItem("currentUser");
+        if (!raw) return null;
+        const user = JSON.parse(raw);
+        return user.customerId || user.customer_id || user.id || null;
+      } catch (e) {
+        console.warn("Could not read currentUser from localStorage:", e);
+        return null;
+      }
     }
 
-    responseMessage.innerHTML = errorMessage;
-  }
-});
+    function getCartTotal() {
+      try {
+        const raw = localStorage.getItem("cartTotal");
+        if (!raw) return null;
+        const value = parseFloat(raw);
+        return Number.isFinite(value) && value > 0 ? value : null;
+      } catch (e) {
+        console.warn("Could not read cartTotal from localStorage:", e);
+        return null;
+      }
+    }
+
+    function show(el) {
+      el.style.display = "";
+    }
+
+    function hide(el) {
+      el.style.display = "none";
+    }
+
+    authorizeBtn.addEventListener("click", async () => {
+      // Reset UI each click
+      hide(responseBox);
+      hide(successActions);
+      responseMessage.textContent = "";
+      responseMessage.className = "text-lg";
+
+      // Use real data if available, otherwise demo defaults
+      const orderId    = `AUTH${Date.now()}`;
+      const customerId = getCurrentCustomerId() || 1;
+      const amount     = getCartTotal() || 99.99;
+      const last4      = "4242";
+
+      try {
+        const resp = await fetch(`${backendBase}/orders/checkout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, customerId, amount, last4 })
+        });
+
+        let data = {};
+        try {
+          data = await resp.json();
+        } catch (_) {
+          data = {};
+        }
+
+        show(responseBox);
+
+        // 1) Non-2xx response: show backend error text if available
+        if (!resp.ok) {
+          responseMessage.className = "alert-error text-lg";
+
+          const backendError =
+            (data && (data.error || data.message)) ||
+            "The payment service returned an error. Please try again later.";
+
+          responseMessage.innerHTML = `⚠️ ${backendError}`;
+          return;
+        }
+
+        // 2) 2xx response: use the result field from server.js
+        const result = data.result;
+        console.log("Authorization outcome from backend:", data);
+
+        if (result === "SUCCESS") {
+          responseMessage.className = "alert-success text-lg";
+          responseMessage.innerHTML =
+            "✅ <strong>Success:</strong> Your payment was authorized successfully!";
+
+          // ONLY here do we show the Customer Settings button
+          show(successActions);
+
+        } else if (result === "INSUFFICIENT_FUNDS") {
+          responseMessage.className = "alert-error text-lg";
+          responseMessage.innerHTML =
+            "💸 Your payment could not be processed due to <strong>insufficient funds</strong> in your account.";
+
+        } else if (result === "INCORRECT_DETAILS") {
+          responseMessage.className = "alert-error text-lg";
+          responseMessage.innerHTML =
+            "❌ Your payment failed due to <strong>incorrect card details</strong>. Please check your card number, expiry date, or CVV and try again.";
+
+        } else if (result === "SERVER_ERROR") {
+          responseMessage.className = "alert-error text-lg";
+          responseMessage.innerHTML =
+            "⚠️ Your payment failed due to an <strong>internal server error</strong> on the authorization service. Please try again later.";
+
+        } else {
+          // Any totally unexpected value
+          responseMessage.className = "alert-error text-lg";
+          responseMessage.innerHTML =
+            "⚠️ Your payment could not be processed due to an unknown error. Please try again.";
+        }
+      } catch (err) {
+        console.error("Network/JS error during payment authorization:", err);
+        show(responseBox);
+        hide(successActions);
+        responseMessage.className = "alert-error text-lg";
+        responseMessage.innerHTML =
+          "❌ A network error occurred while authorizing your payment. Please check your connection and try again.";
+      }
+    });
   </script>
+
   <script src="dist/particles.js"></script>
 </body>
 </html>
