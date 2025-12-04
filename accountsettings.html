@@ -193,10 +193,6 @@
     const updateMessage = document.getElementById("updateMessage");
     const backendBase = "https://pointofsalebackendapi.onrender.com";
 
-    // TODO: Load current user data on page load
-    // For now, you'd need to implement /auth/me endpoint in backend
-    // to fetch current user's data and populate the form
-
     updateForm.addEventListener("submit", async (e) => {
       if (!updateForm.checkValidity()) {
         e.preventDefault();
@@ -221,14 +217,12 @@
         zip_code: document.getElementById("zip_code").value.trim()
       };
 
-      // Only include password if user entered one
       const password = document.getElementById("password").value;
       if (password) {
         payload.password = password;
       }
 
       try {
-        // NOTE: You'll need to create this endpoint in your backend
         const resp = await fetch(`${backendBase}/auth/update`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
