@@ -10,7 +10,7 @@
 
 <body>
 
-<!-- HEADER (invisible bar but still holds logo + cart icon) -->
+<!-- HEADER -->
 <header class="header">
   <div class="header-inner">
     <!-- Logo -->
@@ -24,7 +24,7 @@
       >
     </a>
 
-    <!-- NEW: Search bar + Cart -->
+    <!-- Search bar + Cart -->
     <div class="header-right">
       <input
         type="text"
@@ -64,7 +64,6 @@
       <h2 class="section-title">Products</h2>
 
       <div class="product-grid">
-        <!-- Product 1 -->
         <article class="product-card">
           <img src="images/laptop.png" alt="Laptop" class="product-image">
           <h3 class="product-name">Laptop</h3>
@@ -74,7 +73,6 @@
           </button>
         </article>
 
-        <!-- Product 2 -->
         <article class="product-card">
           <img src="images/sofa.png" alt="Sofa" class="product-image">
           <h3 class="product-name">Sofa</h3>
@@ -110,7 +108,6 @@
             Add to Cart
           </button>
         </article>
-        <!-- Add more products here by copying a product-card block -->
       </div>
     </section>
 
@@ -222,7 +219,7 @@
       window.location.href = "cardinfo.html";
     }
 
-    // === NEW: Product search ===
+    // === Product search ===
     function searchProduct() {
       const input = document.getElementById("productSearch");
       const query = input.value.trim().toLowerCase();
