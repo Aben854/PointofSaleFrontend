@@ -13,24 +13,26 @@
   <header class="header py-4 shadow-md">
     <div class="flex items-center">
       <a href="https://storefrontsolutions.shop/">
-        <img src="images/logo.png" width="260" height="75" alt="Welcome" class="h-12 ml auto">
+        <img src="images/logo.png" width="260" height="75" alt="Storefront Solutions" class="h-12 ml auto">
       </a>
     </div>
     <div class="container mx-auto flex justify-between items-center"></div>
   </header>
 
-  <!-- BODY -->
+  <!-- MAIN -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
     <canvas id="particle-canvas"></canvas>
-    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-md">
-      <h1 class="page-title text-3xl font-semibold text-gray-900 mb-4">
+
+    <!-- Card-style container -->
+    <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
+      <h1 class="page-title fade-in-title text-3xl font-semibold text-gray-900 mb-4">
         Log In
       </h1>
-      <p class="text-gray-600 mb-6">
-        Log in with your email or username.
+      <p class="text-gray-600 mb-8 subtitle">
+        Log in with your email or username to access your account.
       </p>
 
-      <form id="loginForm" class="space-y-4 text-left">
+      <form id="loginForm" class="signup-form space-y-4 text-left">
         <div class="form-group">
           <label class="label" for="user_id">Email or Username</label>
           <input
@@ -62,9 +64,9 @@
           class="btn btn primary w-full mt-6">
           Log In
         </button>
-        </p>
       </form>
     </div>
+
     <script src="dist/particles.js"></script>
   </main>
 
@@ -75,6 +77,30 @@
     const loginForm = document.getElementById("loginForm");
     const loginMessage = document.getElementById("loginMessage");
     const backendBase = "https://pointofsalebackendapi.onrender.com";
+
+    // Save current user info for other pages
+    function saveCurrentUser(data, usernameOrEmail) {
+      try {
+        let userToStore = null;
+
+        if (data && data.user) {
+          userToStore = data.user;
+        } else if (data && data.customerId) {
+          userToStore = {
+            customerId: data.customerId,
+            email: data.email || usernameOrEmail
+          };
+        } else {
+          userToStore = {
+            email: usernameOrEmail
+          };
+        }
+
+        localStorage.setItem("currentUser", JSON.stringify(userToStore));
+      } catch (e) {
+        console.warn("Could not save current user:", e);
+      }
+    }
 
     loginForm.addEventListener("submit", async (e) => {
       if (!loginForm.checkValidity()) {
@@ -101,7 +127,7 @@
         if (!resp.ok) {
           if (resp.status === 403 && data.needsVerification) {
             loginMessage.textContent =
-              "Your email is not verified yet. Please check your inbox for the verification email.";
+              "Your email is not verified yet. Please check your inbox.";
           } else {
             loginMessage.textContent =
               data.error || "Login failed. Please check your credentials.";
@@ -109,7 +135,10 @@
           return;
         }
 
-        // Success – you could store data.user in localStorage if you want
+        // Save user for later pages (cardinfo, settings, etc.)
+        saveCurrentUser(data, usernameOrEmail);
+
+        // Go to storefront
         window.location.href = "Online Storefront Page.html";
       } catch (err) {
         console.error("Error calling /auth/login:", err);

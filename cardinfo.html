@@ -5,29 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Card Information</title>
   <link rel="stylesheet" href="dist/test.css">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 
-<body class="bg-[var(--color-bg)] text-gray-800 font-sans flex flex-col min-h-screen">
-  <canvas id="particle-canvas"></canvas>
-
+<body class="bg-bg text-gray-800 font-sans flex flex-col min-h-screen">
   <!-- HEADER -->
-  <a href="https://storefrontsolutions.shop/" class="logo-link">
-    <img
-      src="images/logo.png"
-      width="260"
-      height="75"
-      alt="Storefront Solutions"
-      class="logo-img">
-  </a>
+  <header class="header py-4 shadow-md">
+    <div class="flex items-center">
+      <a href="https://storefrontsolutions.shop/">
+        <img
+          src="images/logo.png"
+          width="260"
+          height="75"
+          alt="Storefront Solutions"
+          class="h-12 ml auto">
+      </a>
+    </div>
+    <div class="container mx-auto flex justify-between items-center"></div>
+  </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+    <canvas id="particle-canvas"></canvas>
     <div class="bg-white shadow-soft rounded-xl p-8 w-full max-w-lg">
-      <h2 class="text-3xl font-semibold text-gray-900 mb-4">Enter your card details.</h2>
-      <p class="text-gray-600 mb-8">Details can be changed later from the settings page.</p>
+      <h2 class="page-title fade-in-title text-3xl font-semibold text-gray-900 mb-4">
+        Enter your card details.
+      </h2>
+      <p class="text-gray-600 mb-8 subtitle">
+        Details can be changed later from the settings page.
+      </p>
 
-      <form id="cardForm">
-        <!-- First row: Card Number + Expiration Date -->
+      <form id="cardForm" class="signup-form space-y-4 text-left">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Card Number -->
           <div class="form-group">
@@ -41,9 +49,7 @@
               maxlength="19"
               required
             >
-            <!-- Card type dialog -->
             <p id="cardType" class="text-sm mt-2 text-blue-600 font-medium"></p>
-            <!-- Card validation message -->
             <p id="cardValidation" class="text-sm mt-1 text-red-600"></p>
           </div>
 
@@ -59,13 +65,12 @@
               maxlength="5"
               required
             >
-            <!-- Expiration status dialog -->
             <p id="expiryMessage" class="text-sm mt-2 text-red-600"></p>
           </div>
         </div>
-        
-        <!-- CVV -->
-        <div class="form-group mt-4">
+
+        <!-- CVV full width under grid -->
+        <div class="form-group">
           <label class="label" for="cvv">CVV</label>
           <input
             type="text"
@@ -78,47 +83,46 @@
           >
         </div>
 
-        <p id="checkoutMessage" class="text-sm mt-4 text-red-600"></p>
-
-        <br>
+        <p id="checkoutMessage" class="text-sm mt-2 text-red-600"></p>
         <button
           type="button"
           id="checkoutBtn"
-          class="btn btn-primary w-full mt-6 hover:bg-blue-700 transition duration-300">
+          class="btn btn primary w-full mt-6">
           Proceed to Checkout
         </button>
       </form>
     </div>
+
+    <script src="dist/particles.js"></script>
   </main>
 
-  <!-- SCRIPTS -->
+  <!-- FOOTER -->
+  <footer class="footer"></footer>
+
   <script>
-    // Store the actual card number separately
+    // keep real card number here
     let actualCardNumber = "";
     let isCardNumberFocused = false;
 
-    // --- Mask card number: hash all digits except last 4 ---
+    // mask card number except last 4
     function maskCardNumber(cardNumber) {
       const clean = cardNumber.replace(/\D/g, "").slice(0, 16);
-
       if (clean.length <= 4) {
         return clean.replace(/(.{4})/g, "$1 ").trim();
       }
-
       const hashedPart = clean.slice(0, -4).replace(/\d/g, "#");
       const visiblePart = clean.slice(-4);
       const combined = hashedPart + visiblePart;
-
       return combined.replace(/(.{4})/g, "$1 ").trim();
     }
 
-    // --- Format card number with spaces (no masking) ---
+    // format card number with spaces
     function formatCardNumber(cardNumber) {
       const clean = cardNumber.replace(/\D/g, "").slice(0, 16);
       return clean.replace(/(.{4})/g, "$1 ").trim();
     }
 
-    // --- Card type detection ---
+    // detect card type
     function detectCardType(number) {
       const clean = number.replace(/\D/g, "");
       if (/^4/.test(clean)) return "Visa";
@@ -128,43 +132,35 @@
       return "";
     }
 
-    // --- Luhn algorithm for card validation ---
+    // luhn check
     function isValidCardNumber(number) {
       const clean = number.replace(/\D/g, "");
-      
-      if (clean.length < 13 || clean.length > 19) {
-        return false;
-      }
+      if (clean.length < 13 || clean.length > 19) return false;
 
       let sum = 0;
       let isEven = false;
 
       for (let i = clean.length - 1; i >= 0; i--) {
         let digit = parseInt(clean[i], 10);
-
         if (isEven) {
           digit *= 2;
-          if (digit > 9) {
-            digit -= 9;
-          }
+          if (digit > 9) digit -= 9;
         }
-
         sum += digit;
         isEven = !isEven;
       }
-
       return sum % 10 === 0;
     }
 
-    // --- Expiration check ---
+    // check if expiration date is in past
     function isExpired(dateStr) {
-      const [monthStr, yearStr] = dateStr.split("/");
-      const month = parseInt(monthStr, 10);
-      const year = parseInt(yearStr, 10);
+      const parts = dateStr.split("/");
+      if (parts.length !== 2) return true;
 
-      if (!month || !year || month < 1 || month > 12) {
-        return true;
-      }
+      const month = parseInt(parts[0], 10);
+      const year = parseInt(parts[1], 10);
+
+      if (!month || !year || month < 1 || month > 12) return true;
 
       const now = new Date();
       const currentYear = now.getFullYear() % 100;
@@ -175,7 +171,33 @@
       return false;
     }
 
-    // --- Hook up DOM elements ---
+    // read cart total from localStorage
+    function getCartTotal() {
+      try {
+        const stored = localStorage.getItem("cartTotal");
+        if (!stored) return null;
+        const value = parseFloat(stored);
+        if (Number.isNaN(value) || value <= 0) return null;
+        return value;
+      } catch (e) {
+        console.warn("Could not read cartTotal:", e);
+        return null;
+      }
+    }
+
+    // read customer id from localStorage
+    function getCurrentCustomerId() {
+      try {
+        const userJson = localStorage.getItem("currentUser");
+        if (!userJson) return null;
+        const user = JSON.parse(userJson);
+        return user.customerId || user.customer_id || user.id || null;
+      } catch (e) {
+        console.warn("Could not read currentUser:", e);
+        return null;
+      }
+    }
+
     const cardNumberInput = document.getElementById("cardNumber");
     const cardTypeDisplay = document.getElementById("cardType");
     const cardValidation = document.getElementById("cardValidation");
@@ -185,11 +207,10 @@
     const checkoutMessage = document.getElementById("checkoutMessage");
     const backendBase = "https://pointofsalebackendapi.onrender.com";
 
-    // Live card type + masking
+    // live formatting + card type
     cardNumberInput.addEventListener("input", () => {
       const raw = cardNumberInput.value;
       const clean = raw.replace(/\D/g, "").slice(0, 16);
-
       actualCardNumber = clean;
 
       const type = detectCardType(clean);
@@ -202,7 +223,6 @@
       }
 
       cardValidation.textContent = "";
-
       if (isCardNumberFocused) {
         cardNumberInput.value = formatCardNumber(clean);
       }
@@ -220,7 +240,6 @@
       isCardNumberFocused = false;
       if (actualCardNumber) {
         cardNumberInput.value = maskCardNumber(actualCardNumber);
-        
         if (actualCardNumber.length > 0 && !isValidCardNumber(actualCardNumber)) {
           cardValidation.textContent = "Invalid card number. Please check and try again.";
         } else {
@@ -229,7 +248,7 @@
       }
     });
 
-    // Live expiration validation
+    // live expiry formatting
     expDateInput.addEventListener("input", () => {
       let value = expDateInput.value.replace(/\D/g, "");
       if (value.length >= 3) {
@@ -246,11 +265,10 @@
       }
     });
 
-    // Process checkout with backend
+    // checkout handler
     checkoutBtn.addEventListener("click", async () => {
       checkoutMessage.textContent = "";
 
-      // Validate card number first
       if (!actualCardNumber || !isValidCardNumber(actualCardNumber)) {
         cardValidation.textContent = "Please enter a valid card number before proceeding.";
         cardNumberInput.focus();
@@ -258,9 +276,9 @@
       }
 
       const expVal = expDateInput.value.trim();
-
       if (!expVal || expVal.length !== 5 || isExpired(expVal)) {
-        expiryMessage.textContent = "Cannot proceed with an expired or invalid expiration date.";
+        expiryMessage.textContent =
+          "Cannot proceed with an expired or invalid expiration date.";
         expDateInput.focus();
         return;
       }
@@ -271,18 +289,28 @@
         return;
       }
 
-      // Clear any previous errors
       cardValidation.textContent = "";
       expiryMessage.textContent = "";
 
-      // Get last 4 digits for backend
       const last4 = actualCardNumber.slice(-4);
+      const amount = getCartTotal();
+      if (amount === null) {
+        checkoutMessage.textContent =
+          "We could not find your cart total. Please go back to the storefront.";
+        return;
+      }
 
-      // TODO: Get actual customer ID and order ID
-      // For now using placeholder values - you'd get these from session/localStorage
-      const customerId = 1; // Replace with actual logged-in customer ID
-      const orderId = `ORD${Date.now()}`; // Generate unique order ID
-      const amount = 99.99; // Replace with actual cart total
+      const customerId = getCurrentCustomerId();
+      if (!customerId) {
+        checkoutMessage.textContent =
+          "We could not find your customer account. Please log in again.";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+        return;
+      }
+
+      const orderId = `ORD${Date.now()}`;
 
       try {
         const resp = await fetch(`${backendBase}/orders/checkout`, {
@@ -299,20 +327,27 @@
         const data = await resp.json().catch(() => ({}));
 
         if (!resp.ok) {
-          checkoutMessage.textContent = data.error || "Checkout failed. Please try again.";
+          checkoutMessage.textContent =
+            data.error || "Checkout failed. Please try again.";
           return;
         }
 
-        // Check authorization result
         if (data.result === "SUCCESS") {
-          // Redirect to confirmation page
+          try {
+            localStorage.setItem("lastOrderId", orderId);
+          } catch (e) {
+            console.warn("Could not save lastOrderId:", e);
+          }
           window.location.href = "OrderConfirmationPage.html";
         } else if (data.result === "INSUFFICIENT_FUNDS") {
-          checkoutMessage.textContent = "Insufficient funds. Please use a different card.";
+          checkoutMessage.textContent =
+            "Insufficient funds. Please use a different card.";
         } else if (data.result === "INCORRECT_DETAILS") {
-          checkoutMessage.textContent = "Card details incorrect. Please check your information.";
+          checkoutMessage.textContent =
+            "Card details incorrect. Please check your information.";
         } else {
-          checkoutMessage.textContent = "Server error. Please try again later.";
+          checkoutMessage.textContent =
+            "Server error. Please try again later.";
         }
       } catch (err) {
         console.error("Error during checkout:", err);
@@ -320,9 +355,5 @@
       }
     });
   </script>
-
-  <!-- FOOTER -->
-  <footer class="footer"></footer>
-  <script src="dist/particles.js"></script>
 </body>
 </html>
